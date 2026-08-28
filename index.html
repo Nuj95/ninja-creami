@@ -16,12 +16,10 @@
       --accent: #185fa5;
       --success: #3b6d11;
       --danger: #a33;
-      --easy: #eaf3de;
-      --easy-text: #3b6d11;
-      --medium: #faeeda;
-      --medium-text: #854f0b;
-      --hard: #fee;
-      --hard-text: #a33;
+      --frigo-bg: #f0ebe5;
+      --frigo-text: #4a4a48;
+      --frigo-active-bg: #3a3a38;
+      --frigo-active-text: #fff;
     }
 
     body.dark-mode {
@@ -30,6 +28,10 @@
       --text-dark: #fafaf8;
       --text-gray: #a8a7a3;
       --border: #3a3a38;
+      --frigo-bg: #3a3a38;
+      --frigo-text: #d0cfcb;
+      --frigo-active-bg: #fafaf8;
+      --frigo-active-text: #1a1a18;
     }
 
     body {
@@ -48,7 +50,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      sticky: top 0;
+      position: sticky;
+      top: 0;
       z-index: 100;
     }
 
@@ -118,20 +121,20 @@
       padding: 10px;
       border-radius: 8px;
       border: 1px solid var(--border);
-      background: var(--bg-light);
+      background: var(--frigo-bg);
       cursor: pointer;
       font-size: 12px;
       font-weight: 500;
-      color: var(--text-gray);
+      color: var(--frigo-text);
       transition: all 0.15s;
       user-select: none;
       text-align: center;
     }
 
     .frigo-item.active {
-      background: var(--text-dark);
-      color: var(--bg-light);
-      border-color: var(--text-dark);
+      background: var(--frigo-active-bg);
+      color: var(--frigo-active-text);
+      border-color: var(--frigo-active-bg);
     }
 
     .frigo-reset {
@@ -151,7 +154,8 @@
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      sticky: top 52px;
+      position: sticky;
+      top: 52px;
       z-index: 99;
     }
 
@@ -201,11 +205,6 @@
       overflow: hidden;
       transition: all 0.2s;
       position: relative;
-      cursor: grab;
-    }
-
-    .recipe-card:active {
-      cursor: grabbing;
     }
 
     .recipe-card.unavailable {
@@ -257,8 +256,8 @@
       font-weight: 500;
       padding: 2px 8px;
       border-radius: 12px;
-      background: var(--easy);
-      color: var(--easy-text);
+      background: #eaf3de;
+      color: #3b6d11;
     }
 
     .badge.whey {
@@ -269,21 +268,6 @@
     .badge.casein {
       background: #ffe6f0;
       color: #a33;
-    }
-
-    .badge.medium {
-      background: var(--medium);
-      color: var(--medium-text);
-    }
-
-    .badge.hard {
-      background: var(--hard);
-      color: var(--hard-text);
-    }
-
-    .recipe-rating {
-      font-size: 12px;
-      margin-top: 6px;
     }
 
     .recipe-toggle {
@@ -353,9 +337,10 @@
     }
 
     .protocol li {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       padding-left: 20px;
       position: relative;
+      line-height: 1.5;
     }
 
     .protocol li:before {
@@ -447,6 +432,24 @@
       opacity: 0.8;
     }
 
+    .btn-archive {
+      grid-column: 1 / -1;
+      background: var(--danger);
+      color: white;
+      border-color: var(--danger);
+    }
+
+    .btn-archive:hover {
+      opacity: 0.8;
+    }
+
+    .btn-consumed {
+      grid-column: 1 / -1;
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+
     /* ARCHIVE SWIPE */
     .archive-button {
       position: absolute;
@@ -473,17 +476,23 @@
     }
 
     .star {
-      font-size: 20px;
+      font-size: 24px;
       cursor: pointer;
       transition: transform 0.1s;
+      user-select: none;
     }
 
     .star:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
+    }
+
+    .star.empty {
+      opacity: 0.3;
     }
 
     .star.filled {
       color: #ffc107;
+      opacity: 1;
     }
 
     .notes-textarea {
@@ -498,6 +507,55 @@
       font-size: 11px;
       resize: vertical;
       min-height: 50px;
+    }
+
+    /* PREPARED ITEMS */
+    .prepared-item {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .prepared-info {
+      flex: 1;
+    }
+
+    .prepared-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+      cursor: pointer;
+      color: var(--accent);
+    }
+
+    .prepared-date {
+      font-size: 11px;
+      color: var(--text-gray);
+    }
+
+    .prepared-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--success);
+      color: white;
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-small:hover {
+      opacity: 0.8;
     }
 
     /* EMPTY STATE */
@@ -524,7 +582,6 @@
       }
     }
 
-    /* SCROLLBAR */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -558,7 +615,7 @@
   <div class="frigo-panel">
     <div class="frigo-title" onclick="toggleFrigoCollapse()">
       <span class="frigo-toggle-btn" id="frigoToggleBtn">▼</span>
-      Mon frigo / congélo — coche ce que tu as
+      Mon frigo / congélo
     </div>
     <div class="frigo-content" id="frigoContent">
       <!-- Dynamique JS -->
@@ -587,7 +644,7 @@
   </div>
 
   <div class="empty-state" id="emptyState" style="display: none;">
-    Aucune recette disponible avec tes ingrédients actuels.
+    Aucune recette disponible.
   </div>
 
 </div>
@@ -597,7 +654,7 @@
 const recipesData = [
   {
     id: "r001",
-    title: "Glace chocolat protéinée — base fromage blanc",
+    title: "Glace chocolat protéinée — fromage blanc",
     type: "glace",
     difficulty: "facile",
     proteinType: "Caséine chocolat",
@@ -614,14 +671,19 @@ const recipesData = [
     mode: "Lite Ice Cream",
     respin: true,
     protocol: [
-      "Mixer tous les ingrédients dans un bol séparé au mixeur plongeant",
-      "Verser dans le pot jusqu'à la ligne MAX, lisser, congeler 24h à plat",
-      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
-      "Si friable : 1 c. à s. de lait dans le puits + Re-Spin"
+      "Mixer tous les ingrédients dans un bol séparé au mixeur plongeant — bien dissoudre la caséine sans grumeaux",
+      "Verser dans le pot jusqu'à la ligne MAX, lisser la surface avec une spatule, congeler 24h à plat (important : pas debout)",
+      "Sortir du congélateur, passer 5-10 sec sous eau tiède, tempérer 5 min sur le plan de travail",
+      "Lancer FULL → Lite Ice Cream — le spin prend ~2-3 min",
+      "Si la texture est friable ou poudreuse : ajouter 1 c. à s. de lait dans le puits central, lancer Re-Spin"
     ],
     source: "ninjagourmand.com",
     macros: { proteins: 32, fats: 3, carbs: 20, calories: 240 },
-    requiredIngredients: ["fromage_blanc", "lait", "caseine_choco", "miel", "guar_gum"]
+    requiredIngredients: ["fromage_blanc", "lait", "caseine_choco", "miel", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r002",
@@ -643,14 +705,19 @@ const recipesData = [
     mode: "Lite Ice Cream",
     respin: true,
     protocol: [
-      "Mélanger au mixeur plongeant dans un bol séparé",
-      "Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat",
-      "Passer 30 sec sous eau tiède, tempérer 5 min, lancer FULL → Lite Ice Cream",
-      "Re-Spin si friable avec une touche de lait"
+      "Mélanger au mixeur plongeant dans un bol séparé — la whey se dissout plus facilement que la caséine",
+      "Verser dans le pot jusqu'à la ligne MAX, lisser, congeler 24h à plat",
+      "Passer 30 sec sous eau tiède pour détacher la base des parois, tempérer 5 min",
+      "Lancer FULL → Lite Ice Cream",
+      "Re-Spin si la texture est friable — ajouter 1 c. à s. de lait et relancer"
     ],
     source: "georgeats.com",
     macros: { proteins: 30, fats: 2, carbs: 22, calories: 230 },
-    requiredIngredients: ["yaourt_grec", "lait", "whey_cookie", "miel", "vanilla_drops", "guar_gum"]
+    requiredIngredients: ["yaourt_grec", "lait", "whey_cookie", "miel", "vanilla_drops", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r003",
@@ -664,26 +731,29 @@ const recipesData = [
         { name: "Yaourt grec 0%", amount: 300, unit: "g" },
         { name: "Mangue congelée mixée", amount: 100, unit: "g" },
         { name: "Miel", amount: 1, unit: "c. à s." },
-        { name: "Vanilla drops", amount: 5, unit: "gouttes" },
-        { name: "Pincée de sel", amount: 1, unit: "pincée" }
+        { name: "Vanilla drops", amount: 5, unit: "gouttes" }
       ]
     },
     mode: "Lite Ice Cream",
     respin: true,
     protocol: [
-      "Décongeler légèrement la mangue, la mixer en purée",
-      "Mélanger yaourt + purée mangue + miel + vanilla drops + sel",
-      "Lisser la surface, congeler 24h à plat",
+      "Décongeler légèrement la mangue (2-3 min à température ambiante), la mixer en purée lisse",
+      "Mélanger yaourt + purée mangue + miel + vanilla drops directement dans le pot Ninja — bien mélanger",
+      "Lisser la surface avec une cuillère, congeler 24h à plat",
       "Passer sous eau tiède 30 sec, tempérer 5 min, lancer FULL → Lite Ice Cream",
-      "La texture sera friable au premier spin — Re-Spin une fois"
+      "La texture sera friable au premier spin — c'est normal. Ajouter 1 c. à s. lait et Re-Spin une fois"
     ],
     source: "eatthegains.com",
     macros: { proteins: 22, fats: 2, carbs: 28, calories: 210 },
-    requiredIngredients: ["yaourt_grec", "mangue", "miel", "vanilla_drops"]
+    requiredIngredients: ["yaourt_grec", "mangue", "miel", "vanilla_drops"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r004",
-    title: "Frozen yogurt mangue & biscuit cookie — protéinée",
+    title: "Frozen yogurt mangue & biscuit cookie",
     type: "froyo",
     difficulty: "moyen",
     proteinType: "Whey biscuit cookie",
@@ -697,23 +767,24 @@ const recipesData = [
         { name: "Miel", amount: 1, unit: "c. à s." },
         { name: "Vanilla drops", amount: 5, unit: "gouttes" },
         { name: "Guar gum", amount: 0.20, unit: "g" }
-      ],
-      mixins: [
-        { name: "Dés mangue tempérés 10 min", amount: 30, unit: "g" }
       ]
     },
     mode: "Lite Ice Cream + Mix-In",
     respin: true,
     protocol: [
-      "Mixer la mangue en purée, ajouter tous les ingrédients, mixer",
+      "Mixer la mangue en purée lisse, ajouter tous les ingrédients dans un bol séparé, mixer au plongeant",
       "Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat",
       "Tempérer 5 min, lancer FULL → Lite Ice Cream",
-      "Re-Spin si texture friable, avec 1 c. à s. de lait",
-      "Optionnel : puits 4 cm → dés de mangue tempérés → Mix-In"
+      "Re-Spin si friable avec 1 c. à s. de lait",
+      "Puits 4 cm au centre → dés de mangue tempérés 10 min → Mix-In (optionnel mais recommandé)"
     ],
     source: "eatthegains.com + ice-creami.com",
     macros: { proteins: 33, fats: 3, carbs: 27, calories: 255 },
-    requiredIngredients: ["yaourt_grec", "lait", "mangue", "whey_cookie", "miel", "vanilla_drops", "guar_gum"]
+    requiredIngredients: ["yaourt_grec", "lait", "mangue", "whey_cookie", "miel", "vanilla_drops", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r005",
@@ -727,22 +798,25 @@ const recipesData = [
         { name: "Yaourt grec 0%", amount: 300, unit: "g" },
         { name: "Fraises congelées mixées", amount: 100, unit: "g" },
         { name: "Miel", amount: 1, unit: "c. à s." },
-        { name: "Vanilla drops", amount: 4, unit: "gouttes" },
-        { name: "Pincée de sel", amount: 1, unit: "pincée" }
+        { name: "Vanilla drops", amount: 4, unit: "gouttes" }
       ]
     },
     mode: "Lite Ice Cream",
     respin: true,
     protocol: [
-      "Mixer les fraises congelées en purée lisse",
-      "Ajouter yaourt + miel + vanilla drops + sel, mélanger",
+      "Mixer les fraises congelées en purée lisse dans un bol séparé",
+      "Ajouter yaourt + miel + vanilla drops, mélanger jusqu'à texture homogène rose pâle",
       "Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat",
-      "Passer sous eau tiède 30 sec, lancer FULL → Lite Ice Cream",
+      "Passer sous eau tiède 30 sec, tempérer 5 min, lancer FULL → Lite Ice Cream",
       "Re-Spin si nécessaire"
     ],
     source: "georgeats.com",
     macros: { proteins: 20, fats: 2, carbs: 22, calories: 185 },
-    requiredIngredients: ["yaourt_grec", "fraises", "miel", "vanilla_drops"]
+    requiredIngredients: ["yaourt_grec", "fraises", "miel", "vanilla_drops"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r006",
@@ -765,14 +839,19 @@ const recipesData = [
     mode: "Lite Ice Cream",
     respin: true,
     protocol: [
-      "Mixer les fruits rouges en purée, ajouter tous les ingrédients",
+      "Mixer les fruits rouges en purée, ajouter tous les ingrédients dans un bol séparé",
+      "Mixer au plongeant jusqu'à texture lisse et homogène",
       "Verser dans le pot, congeler 24h à plat",
       "Tempérer 5 min, lancer FULL → Lite Ice Cream",
       "Si friable : 1–2 c. à s. de lait + Re-Spin"
     ],
     source: "ninjagourmand.com",
     macros: { proteins: 31, fats: 3, carbs: 23, calories: 245 },
-    requiredIngredients: ["fromage_blanc", "yaourt_grec", "lait", "fruits_rouges", "caseine_choco", "miel", "guar_gum"]
+    requiredIngredients: ["fromage_blanc", "yaourt_grec", "lait", "fruits_rouges", "caseine_choco", "miel", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r007",
@@ -790,24 +869,24 @@ const recipesData = [
         { name: "Miel", amount: 1, unit: "c. à s." },
         { name: "Vanilla drops", amount: 5, unit: "gouttes" },
         { name: "Guar gum", amount: 0.20, unit: "g" }
-      ],
-      mixins: [
-        { name: "Spéculoos écrasé", amount: 15, unit: "g" },
-        { name: "Noisettes concassées", amount: 10, unit: "g" }
       ]
     },
     mode: "Lite Ice Cream + Mix-In",
     respin: true,
     protocol: [
-      "Mixer tous les ingrédients au mixeur plongeant — bien intégrer la purée noisette",
+      "Mixer tous les ingrédients au mixeur plongeant dans un bol séparé — bien intégrer la purée noisette, pas de grumeaux gras",
       "Verser dans le pot, congeler 24h à plat",
-      "Tempérer 7–8 min (purée noisette rend plus dense)",
+      "Tempérer 7–8 min (la purée noisette rend plus dense que les autres bases)",
       "Lancer FULL → Lite Ice Cream, Re-Spin si compacte",
       "Puits 4 cm → spéculoos + noisettes → Mix-In"
     ],
     source: "ninjagourmand.com",
     macros: { proteins: 30, fats: 14, carbs: 18, calories: 305 },
-    requiredIngredients: ["fromage_blanc", "lait", "whey_cookie", "puree_noisette", "miel", "vanilla_drops", "guar_gum"]
+    requiredIngredients: ["fromage_blanc", "lait", "whey_cookie", "puree_noisette", "miel", "vanilla_drops", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r008",
@@ -830,15 +909,19 @@ const recipesData = [
     mode: "Milkshake",
     respin: true,
     protocol: [
-      "Mixer fruits rouges en purée, ajouter tous les ingrédients",
-      "Verser dans le pot, congeler 24h à plat",
+      "Mixer fruits rouges en purée, ajouter tous les ingrédients dans un bol",
+      "Mixer au plongeant, verser dans le pot, congeler 24h à plat",
       "Tempérer 5–8 min, lancer FULL → Milkshake",
-      "Verser 100–120 ml de lait froid dans le puits, Re-Spin",
-      "Boire immédiatement — ne pas recongeler"
+      "Verser 100–120 ml de lait froid dans le puits, Re-Spin (la caséine épaissit plus que la whey)",
+      "IMPORTANT : Boire immédiatement — ne pas recongeler après Milkshake"
     ],
     source: "ninjagourmand.com",
     macros: { proteins: 30, fats: 3, carbs: 24, calories: 245 },
-    requiredIngredients: ["fromage_blanc", "yaourt_grec", "lait", "fruits_rouges", "caseine_choco", "miel", "guar_gum"]
+    requiredIngredients: ["fromage_blanc", "yaourt_grec", "lait", "fruits_rouges", "caseine_choco", "miel", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r009",
@@ -855,27 +938,28 @@ const recipesData = [
         { name: "Miel", amount: 1, unit: "c. à s." },
         { name: "Vanilla drops", amount: 6, unit: "gouttes" },
         { name: "Guar gum", amount: 0.20, unit: "g" }
-      ],
-      mixins: [
-        { name: "Oréo écrasé", amount: 12, unit: "g" }
       ]
     },
     mode: "Lite Ice Cream + Mix-In",
     respin: true,
     protocol: [
-      "Mixer la base au mixeur plongeant",
+      "Mixer la base au mixeur plongeant dans un bol séparé",
       "Verser dans le pot, congeler 24h à plat",
-      "Écraser le biscuit dans un ramequin",
+      "Écraser le biscuit Oréo dans un ramequin, laisser à température ambiante",
       "Tempérer 5 min, lancer FULL → Lite Ice Cream",
       "Re-Spin si friable, puits 4 cm → biscuit → Mix-In"
     ],
     source: "lifestyleofafoodie.com",
     macros: { proteins: 31, fats: 4, carbs: 21, calories: 250 },
-    requiredIngredients: ["fromage_blanc", "lait", "whey_cc", "miel", "vanilla_drops", "guar_gum", "oreo"]
+    requiredIngredients: ["fromage_blanc", "lait", "whey_cc", "miel", "vanilla_drops", "guar_gum", "oreo"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r010",
-    title: "Glace Oréo protéinée — effet McFlurry",
+    title: "Glace Oréo protéinée — McFlurry style",
     type: "glace",
     difficulty: "facile",
     proteinType: "Whey cookies & cream",
@@ -888,28 +972,29 @@ const recipesData = [
         { name: "Miel", amount: 1, unit: "c. à s." },
         { name: "Vanilla drops", amount: 6, unit: "gouttes" },
         { name: "Guar gum", amount: 0.20, unit: "g" }
-      ],
-      mixins: [
-        { name: "Oréos écrasés grossièrement", amount: 22, unit: "g" }
       ]
     },
     mode: "Lite Ice Cream → Re-Spin → Mix-In",
     respin: true,
     protocol: [
-      "Mixer base au mixeur plongeant dans un bol séparé",
+      "Mixer base au mixeur plongeant dans un bol séparé — bien mélanger",
       "Verser dans le pot jusqu'à MAX, congeler 24h à plat",
-      "Écraser 2 Oréos grossièrement dans ramequin",
+      "Écraser 2 Oréos grossièrement dans ramequin (pas de poudre fine, des morceaux ~0.5-1cm)",
       "Tempérer 5 min, lancer FULL → Lite Ice Cream",
-      "Ajouter 1 c. à s. lait dans puits + Re-Spin",
-      "Puits 4 cm → Oréos → Mix-In"
+      "Ajouter 1 c. à s. lait dans puits + Re-Spin (texture devient crémeuse)",
+      "Puits 4 cm → Oréos → Mix-In (les morceaux restent intacts, d'où l'effet McFlurry)"
     ],
     source: "oliviaskitchen.com · basicswithbails.com",
     macros: { proteins: 32, fats: 6, carbs: 26, calories: 285 },
-    requiredIngredients: ["yaourt_grec", "lait", "whey_cc", "miel", "vanilla_drops", "guar_gum", "oreo"]
+    requiredIngredients: ["yaourt_grec", "lait", "whey_cc", "miel", "vanilla_drops", "guar_gum", "oreo"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r011",
-    title: "Glace spread pistachio protéiné",
+    title: "Glace spread pistachio",
     type: "glace",
     difficulty: "facile",
     proteinType: "Spread pistachio",
@@ -919,25 +1004,28 @@ const recipesData = [
         { name: "Lait entier", amount: 350, unit: "ml" },
         { name: "Spread protein pistachio", amount: 3, unit: "c. à s." },
         { name: "Miel", amount: 2, unit: "c. à s." },
-        { name: "Guar gum", amount: 0.20, unit: "g" },
-        { name: "Pincée de sel", amount: 1, unit: "pincée" }
+        { name: "Guar gum", amount: 0.20, unit: "g" }
       ]
     },
     mode: "Lite Ice Cream",
     respin: true,
     protocol: [
-      "Mixer tous ingrédients au mixeur plongeant",
+      "Mixer tous ingrédients au mixeur plongeant — le spread se dissout mieux avec du lait entier",
       "Verser dans pot, congeler 24h à plat",
       "Tempérer 5 min, lancer FULL → Lite Ice Cream",
       "Re-Spin si nécessaire"
     ],
     source: "laraclevenger.com",
     macros: { proteins: 28, fats: 11, carbs: 24, calories: 275 },
-    requiredIngredients: ["lait", "spread_pistachio", "miel", "guar_gum"]
+    requiredIngredients: ["lait", "spread_pistachio", "miel", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r012",
-    title: "Glace chocolat noisette spread protéiné",
+    title: "Glace chocolat noisette spread",
     type: "glace",
     difficulty: "facile",
     proteinType: "Spread chocolat noisette",
@@ -948,27 +1036,27 @@ const recipesData = [
         { name: "Spread protein choco noisette", amount: 3, unit: "c. à s." },
         { name: "Miel", amount: 1.5, unit: "c. à s." },
         { name: "Guar gum", amount: 0.20, unit: "g" }
-      ],
-      mixins: [
-        { name: "Pépites chocolat noir", amount: 20, unit: "g" }
       ]
     },
-    mode: "Lite Ice Cream + Mix-In",
+    mode: "Lite Ice Cream",
     respin: true,
     protocol: [
       "Mixer tous ingrédients au mixeur plongeant",
       "Verser dans pot, congeler 24h à plat",
       "Tempérer 5 min, lancer FULL → Lite Ice Cream",
-      "Re-Spin si nécessaire",
-      "Mix-In optionnel avec pépites"
+      "Re-Spin si nécessaire"
     ],
     source: "basicswithbails.com",
     macros: { proteins: 27, fats: 12, carbs: 23, calories: 280 },
-    requiredIngredients: ["lait", "spread_choco_noisette", "miel", "guar_gum"]
+    requiredIngredients: ["lait", "spread_choco_noisette", "miel", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   },
   {
     id: "r013",
-    title: "Glace milky nut spread protéiné",
+    title: "Glace milky nut spread",
     type: "glace",
     difficulty: "facile",
     proteinType: "Spread milky nut",
@@ -986,13 +1074,17 @@ const recipesData = [
     respin: true,
     protocol: [
       "Mixer tous ingrédients",
-      "Verser dans pot, congeler 24h",
+      "Verser dans pot, congeler 24h à plat",
       "Tempérer 5 min → Lite Ice Cream",
       "Re-Spin si friable"
     ],
     source: "thebalancednutritionist.com",
     macros: { proteins: 26, fats: 11, carbs: 24, calories: 270 },
-    requiredIngredients: ["lait", "spread_milky_nut", "miel", "vanilla_drops", "guar_gum"]
+    requiredIngredients: ["lait", "spread_milky_nut", "miel", "vanilla_drops", "guar_gum"],
+    rating: 0,
+    notes: "",
+    prepared: [],
+    status: "active"
   }
 ];
 
@@ -1000,17 +1092,17 @@ const recipesData = [
 const ingredientsMap = {
   fromage_blanc: "Fromage blanc 0%",
   yaourt_grec: "Yaourt grec 0%",
-  lait: "Lait écrémé/demi",
+  lait: "Lait",
   caseine_choco: "Caséine chocolat",
   whey_cookie: "Whey biscuit cookie",
   whey_cc: "Whey cookies & cream",
-  fruits_rouges: "Fruits rouges congelés",
+  fruits_rouges: "Fruits rouges",
   mangue: "Mangue congelée",
   fraises: "Fraises congelées",
   miel: "Miel",
   vanilla_drops: "Vanilla drops",
   guar_gum: "Guar gum",
-  puree_noisette: "Purée noisette 100%",
+  puree_noisette: "Purée noisette",
   oreo: "Oréos",
   spread_pistachio: "Spread pistachio",
   spread_choco_noisette: "Spread choco noisette",
@@ -1036,7 +1128,7 @@ function loadFromStorage() {
   const stored = localStorage.getItem("ninjaCreami");
   if (stored) {
     const data = JSON.parse(stored);
-    selectedIngredients = new Set(data.selectedIngredients || []);
+    selectedIngredients = new Set(data.selectedIngredients || Object.keys(ingredientsMap));
     recipes = data.recipes || JSON.parse(JSON.stringify(recipesData));
     if (localStorage.getItem("darkMode") === "true") {
       document.body.classList.add("dark-mode");
@@ -1103,18 +1195,45 @@ function updateRecipes() {
   grid.innerHTML = "";
   
   let visible = 0;
-  recipes.forEach(recipe => {
-    const hasAll = recipe.requiredIngredients.every(i => selectedIngredients.has(i));
-    const typeMatch = currentFilter === "all" || recipe.type === currentFilter ||
-                      (currentFilter === "prepared" && recipe.prepared && recipe.prepared.length > 0) ||
-                      (currentFilter === "archived" && recipe.status === "archived");
-    
-    if (!typeMatch) return;
-    
-    const card = createRecipeCard(recipe, hasAll);
-    grid.appendChild(card);
-    visible++;
-  });
+  
+  // Cas spécial : filtre "prepared"
+  if (currentFilter === "prepared") {
+    const preparedRecipes = recipes.filter(r => r.prepared && r.prepared.length > 0);
+    if (preparedRecipes.length === 0) {
+      document.getElementById("emptyState").style.display = "block";
+      updateStats();
+      return;
+    }
+    preparedRecipes.forEach(recipe => {
+      recipe.prepared.forEach((prep, index) => {
+        const card = createPreparedCard(recipe, prep, index);
+        grid.appendChild(card);
+        visible++;
+      });
+    });
+  } else {
+    recipes.forEach(recipe => {
+      const hasAll = recipe.requiredIngredients.every(i => selectedIngredients.has(i));
+      const typeMatch = currentFilter === "all" || recipe.type === currentFilter ||
+                        (currentFilter === "archived" && recipe.status === "archived");
+      
+      if (!typeMatch || recipe.status === "archived") return;
+      
+      const card = createRecipeCard(recipe, hasAll);
+      grid.appendChild(card);
+      visible++;
+    });
+
+    // Filtre archived
+    if (currentFilter === "archived") {
+      const archived = recipes.filter(r => r.status === "archived");
+      archived.forEach(recipe => {
+        const card = createRecipeCard(recipe, true);
+        grid.appendChild(card);
+        visible++;
+      });
+    }
+  }
 
   document.getElementById("emptyState").style.display = visible === 0 ? "block" : "none";
   updateStats();
@@ -1150,18 +1269,6 @@ function createRecipeCard(recipe, available) {
   typeBadge.textContent = recipe.proteinType;
   meta.appendChild(typeBadge);
 
-  const diffBadge = document.createElement("span");
-  diffBadge.className = "badge " + (recipe.difficulty === "facile" ? "" : recipe.difficulty === "moyen" ? "medium" : "hard");
-  diffBadge.textContent = recipe.difficulty;
-  meta.appendChild(diffBadge);
-
-  if (recipe.rating > 0) {
-    const ratingBadge = document.createElement("span");
-    ratingBadge.className = "badge";
-    ratingBadge.textContent = "⭐".repeat(recipe.rating);
-    meta.appendChild(ratingBadge);
-  }
-
   info.appendChild(meta);
 
   const toggle = document.createElement("div");
@@ -1186,13 +1293,6 @@ function createRecipeCard(recipe, available) {
     const diff = startX - currentX;
     if (diff > 50) {
       card.classList.add("swiping");
-      if (!card.querySelector(".archive-button")) {
-        const archiveBtn = document.createElement("div");
-        archiveBtn.className = "archive-button";
-        archiveBtn.textContent = "📦 Archive";
-        archiveBtn.onclick = () => archiveRecipe(recipe.id);
-        card.appendChild(archiveBtn);
-      }
     }
   });
 
@@ -1203,9 +1303,46 @@ function createRecipeCard(recipe, available) {
   return card;
 }
 
+function createPreparedCard(recipe, prep, index) {
+  const card = document.createElement("div");
+  card.className = "prepared-item";
+
+  const info = document.createElement("div");
+  info.className = "prepared-info";
+
+  const title = document.createElement("div");
+  title.className = "prepared-title";
+  title.textContent = recipe.title;
+  title.onclick = () => {
+    const body = document.querySelector(`[data-recipe-id="${recipe.id}"]`)?.querySelector(".recipe-body");
+    if (body) body.classList.toggle("open");
+  };
+  info.appendChild(title);
+
+  const date = document.createElement("div");
+  date.className = "prepared-date";
+  date.textContent = `📅 ${prep.date} ${prep.eaten ? "✅ Mangé" : "🧊 En congélation"}`;
+  info.appendChild(date);
+
+  const actions = document.createElement("div");
+  actions.className = "prepared-actions";
+
+  const consumedBtn = document.createElement("button");
+  consumedBtn.className = "btn-small";
+  consumedBtn.textContent = "✅ Consommé";
+  consumedBtn.onclick = () => markConsumed(recipe.id, index);
+  actions.appendChild(consumedBtn);
+
+  card.appendChild(info);
+  card.appendChild(actions);
+
+  return card;
+}
+
 function createRecipeBody(recipe) {
   const body = document.createElement("div");
   body.className = "recipe-body";
+  body.dataset.recipeId = recipe.id;
 
   let html = `
     <h3>Mode Ninja</h3>
@@ -1248,7 +1385,7 @@ function createRecipeBody(recipe) {
   html += `<h3>Rating</h3>
     <div class="rating-input" id="rating-${recipe.id}">`;
   for (let i = 1; i <= 5; i++) {
-    const filled = i <= recipe.rating ? " filled" : "";
+    const filled = i <= recipe.rating ? " filled" : " empty";
     html += `<span class="star${filled}" onclick="rateRecipe('${recipe.id}', ${i})">⭐</span>`;
   }
   html += `</div>
@@ -1256,7 +1393,7 @@ function createRecipeBody(recipe) {
     
     <div class="recipe-actions">
       <button class="btn btn-prepare" onclick="markPrepared('${recipe.id}')">📅 Préparer</button>
-      <button class="btn" onclick="showHistory('${recipe.id}')">📋 Historique</button>
+      <button class="btn btn-archive" onclick="archiveRecipe('${recipe.id}')">📦 Archiver</button>
     </div>
 
     <div class="source">Source: <a href="#" target="_blank">${recipe.source}</a></div>`;
@@ -1298,14 +1435,15 @@ function markPrepared(recipeId) {
   alert("✅ Marqué comme préparé le " + new Date().toLocaleDateString("fr-FR"));
 }
 
-function showHistory(recipeId) {
+function markConsumed(recipeId, index) {
   const recipe = recipes.find(r => r.id === recipeId);
-  if (!recipe.prepared || recipe.prepared.length === 0) {
-    alert("Aucune préparation enregistrée");
-    return;
+  if (recipe.prepared && recipe.prepared[index]) {
+    recipe.prepared[index].eaten = true;
+    recipe.prepared.splice(index, 1);
+    saveToStorage();
+    updateRecipes();
+    alert("✅ Supprimé de la liste de préparation");
   }
-  const history = recipe.prepared.map((p, i) => `${i + 1}. ${p.date} ${p.eaten ? "✅ Mangé" : "🧊 En congélation"}`).join("\n");
-  alert("Historique :\n\n" + history);
 }
 
 // ==== ARCHIVE ====
@@ -1319,7 +1457,7 @@ function archiveRecipe(recipeId) {
 // ==== STATS ====
 function updateStats() {
   const prepared = recipes.reduce((sum, r) => sum + (r.prepared ? r.prepared.length : 0), 0);
-  const available = recipes.filter(r => r.requiredIngredients.every(i => selectedIngredients.has(i)) && currentFilter === "all").length;
+  const available = recipes.filter(r => r.requiredIngredients.every(i => selectedIngredients.has(i)) && r.status !== "archived").length;
   document.getElementById("statsText").innerHTML = `<strong>${available}</strong> recette${available > 1 ? "s" : ""} disponible${available > 1 ? "s" : ""} · <strong>${prepared}</strong> en préparation`;
 }
 
