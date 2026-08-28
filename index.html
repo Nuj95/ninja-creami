@@ -1,610 +1,1338 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ninja Creami — Recettes protéinées</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a18; padding: 1.2rem; max-width: 720px; margin: 0 auto; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧊 Ninja Creami Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* FRIGO PANEL */
-.frigo-panel { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 14px; padding: 14px 16px; margin-bottom: 1.2rem; }
-.frigo-title { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
-.frigo-grid { display: flex; flex-wrap: wrap; gap: 7px; }
-.frigo-item { display: flex; align-items: center; gap: 6px; background: #f5f4f0; border: 0.5px solid #d3d1c7; border-radius: 20px; padding: 5px 11px; cursor: pointer; user-select: none; font-size: 12px; font-weight: 500; color: #5f5e5a; transition: all 0.15s; }
-.frigo-item.active { background: #1a1a18; color: #fff; border-color: #1a1a18; }
-.frigo-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #c8c6be; transition: background 0.15s; }
-.frigo-item.active .dot { background: #6ee26e; }
-.frigo-reset { margin-top: 10px; font-size: 11px; color: #888780; cursor: pointer; text-decoration: underline; }
+    :root {
+      --bg-light: #fafaf8;
+      --bg-white: #ffffff;
+      --text-dark: #1a1a18;
+      --text-gray: #5f5e5a;
+      --border: #d3d1c7;
+      --accent: #185fa5;
+      --success: #3b6d11;
+      --danger: #a33;
+      --easy: #eaf3de;
+      --easy-text: #3b6d11;
+      --medium: #faeeda;
+      --medium-text: #854f0b;
+      --hard: #fee;
+      --hard-text: #a33;
+    }
 
-/* FILTER BAR */
-.filter-bar { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-.filter-label { font-size: 11px; color: #888780; }
-.filter-btn { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; border: 0.5px solid #d3d1c7; background: transparent; color: #5f5e5a; cursor: pointer; transition: all 0.15s; }
-.filter-btn.active { background: #1a1a18; color: #fff; border-color: #1a1a18; }
+    body.dark-mode {
+      --bg-light: #1a1a18;
+      --bg-white: #2a2a28;
+      --text-dark: #fafaf8;
+      --text-gray: #a8a7a3;
+      --border: #3a3a38;
+    }
 
-/* COUNTER */
-.results-count { font-size: 11px; color: #888780; margin-bottom: 0.8rem; }
-.results-count strong { color: #1a1a18; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      padding: 0;
+      overflow-x: hidden;
+    }
 
-/* RECIPE CARD */
-.recipe-card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; overflow: hidden; margin-bottom: 10px; transition: opacity 0.2s; }
-.recipe-card.hidden { display: none; }
-.recipe-card.unavailable { opacity: 0.35; }
-.recipe-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 13px 16px; cursor: pointer; gap: 10px; }
-.recipe-header:hover { background: #f5f4f0; }
-.recipe-name { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
-.recipe-meta { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-.badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
-.b-prot { background: #eaf3de; color: #3b6d11; }
-.b-base { background: #faeeda; color: #854f0b; }
-.b-flavor { background: #eeedfe; color: #3c3489; }
-.b-unavail { background: #fee; color: #a33; }
-.recipe-toggle { font-size: 20px; color: #888780; min-width: 20px; text-align: center; margin-top: 2px; }
-.mode-bar { display: flex; align-items: center; gap: 8px; padding: 7px 16px; background: #f5f4f0; border-top: 0.5px solid #d3d1c7; font-size: 11px; color: #5f5e5a; flex-wrap: wrap; }
-.mode-tag { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 20px; background: #e6f1fb; color: #185fa5; }
-.mixin-tag { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 20px; background: #eeedfe; color: #3c3489; }
+    /* HEADER */
+    header {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      sticky: top 0;
+      z-index: 100;
+    }
 
-/* SOURCE BADGE */
-.source-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; background: #eaf3de; color: #3b6d11; }
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
 
-/* BODY */
-.recipe-body { display: none; border-top: 0.5px solid #d3d1c7; }
-.recipe-body.open { display: block; }
-.rb-inner { padding: 14px 16px; }
-.section-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #888780; margin: 12px 0 7px; }
-.section-label:first-child { margin-top: 0; }
-.ingr-table { width: 100%; border-collapse: collapse; }
-.ingr-table tr { border-bottom: 0.5px solid #ebe9e3; }
-.ingr-table tr:last-child { border-bottom: none; }
-.ingr-table td { padding: 5px 0; font-size: 12px; }
-.ingr-table td:last-child { text-align: right; font-weight: 500; color: #5f5e5a; }
-.steps-list { display: flex; flex-direction: column; gap: 7px; }
-.step-row { display: flex; gap: 10px; font-size: 12px; line-height: 1.55; color: #5f5e5a; }
-.step-n { font-weight: 500; color: #1a1a18; min-width: 16px; }
-.tip-box { background: #f5f4f0; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #5f5e5a; margin-top: 10px; line-height: 1.55; }
-.tip-box strong { color: #1a1a18; }
-.source-box { font-size: 11px; color: #888780; margin-top: 8px; padding-top: 8px; border-top: 0.5px solid #ebe9e3; }
-.source-box a { color: #185fa5; text-decoration: none; }
-.macros { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-.macro { font-size: 11px; padding: 3px 9px; border-radius: 20px; background: #f5f4f0; color: #5f5e5a; }
+    .dark-toggle {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
 
-.empty-state { text-align: center; padding: 2rem; color: #888780; font-size: 13px; display: none; }
-</style>
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* FRIGO PANEL */
+    .frigo-panel {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .frigo-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-gray);
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .frigo-toggle-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--text-gray);
+    }
+
+    .frigo-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .frigo-content.collapsed {
+      display: none;
+    }
+
+    .frigo-item {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-light);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-gray);
+      transition: all 0.15s;
+      user-select: none;
+      text-align: center;
+    }
+
+    .frigo-item.active {
+      background: var(--text-dark);
+      color: var(--bg-light);
+      border-color: var(--text-dark);
+    }
+
+    .frigo-reset {
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: underline;
+    }
+
+    /* FILTERS */
+    .filters {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      sticky: top 52px;
+      z-index: 99;
+    }
+
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-light);
+      color: var(--text-gray);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      background: var(--text-dark);
+      color: var(--bg-light);
+      border-color: var(--text-dark);
+    }
+
+    /* STATS */
+    .stats {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-gray);
+    }
+
+    .stats strong {
+      color: var(--text-dark);
+    }
+
+    /* RECIPES GRID */
+    .recipes-grid {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 12px;
+    }
+
+    .recipe-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+      position: relative;
+      cursor: grab;
+    }
+
+    .recipe-card:active {
+      cursor: grabbing;
+    }
+
+    .recipe-card.unavailable {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .recipe-card.hidden {
+      display: none;
+    }
+
+    .recipe-card.swiping {
+      transform: translateX(-60px);
+    }
+
+    .recipe-header {
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .recipe-header:hover {
+      background: var(--bg-light);
+    }
+
+    .recipe-info {
+      flex: 1;
+    }
+
+    .recipe-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
+
+    .recipe-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--easy);
+      color: var(--easy-text);
+    }
+
+    .badge.whey {
+      background: #e6f1fb;
+      color: var(--accent);
+    }
+
+    .badge.casein {
+      background: #ffe6f0;
+      color: #a33;
+    }
+
+    .badge.medium {
+      background: var(--medium);
+      color: var(--medium-text);
+    }
+
+    .badge.hard {
+      background: var(--hard);
+      color: var(--hard-text);
+    }
+
+    .recipe-rating {
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .recipe-toggle {
+      font-size: 20px;
+      color: var(--text-gray);
+      min-width: 20px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    /* RECIPE BODY */
+    .recipe-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 14px;
+      background: var(--bg-light);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-gray);
+    }
+
+    .recipe-body.open {
+      display: block;
+    }
+
+    .recipe-body h3 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 12px 0 8px;
+      color: var(--text-dark);
+    }
+
+    .recipe-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .ingredients-table {
+      width: 100%;
+      margin-bottom: 12px;
+      border-collapse: collapse;
+    }
+
+    .ingredients-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ingredients-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .ingredients-table td {
+      padding: 6px 0;
+      font-size: 12px;
+    }
+
+    .ingredients-table td:last-child {
+      text-align: right;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .protocol {
+      list-style: none;
+      margin-bottom: 12px;
+    }
+
+    .protocol li {
+      margin-bottom: 8px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .protocol li:before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .mode-info {
+      background: var(--bg-white);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--text-dark);
+    }
+
+    .macros {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .macro {
+      background: var(--bg-white);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      text-align: center;
+      color: var(--text-gray);
+    }
+
+    .macro-value {
+      font-weight: 600;
+      color: var(--text-dark);
+      display: block;
+    }
+
+    .source {
+      font-size: 10px;
+      color: var(--text-gray);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .source a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* BUTTONS */
+    .recipe-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-white);
+      color: var(--text-dark);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--text-dark);
+      color: var(--bg-light);
+      border-color: var(--text-dark);
+    }
+
+    .btn-prepare {
+      grid-column: 1 / -1;
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+
+    .btn-prepare:hover {
+      opacity: 0.8;
+    }
+
+    /* ARCHIVE SWIPE */
+    .archive-button {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 60px;
+      background: var(--danger);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: -1;
+    }
+
+    /* RATING STARS */
+    .rating-input {
+      display: flex;
+      gap: 4px;
+      margin: 8px 0;
+    }
+
+    .star {
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .star:hover {
+      transform: scale(1.1);
+    }
+
+    .star.filled {
+      color: #ffc107;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-white);
+      color: var(--text-dark);
+      font-family: inherit;
+      font-size: 11px;
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-gray);
+      font-size: 14px;
+    }
+
+    /* MOBILE RESPONSIVENESS */
+    @media (max-width: 640px) {
+      .recipes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+
+      .frigo-content {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-light);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-gray);
+    }
+
+  </style>
 </head>
 <body>
 
-<!-- FRIGO -->
-<div class="frigo-panel">
-  <div class="frigo-title">🧊 Mon frigo [TEST LIVE - ça marche!] / congélo — coche ce que tu as</div>
-  <div class="frigo-grid" id="frigoGrid">
-    <div class="frigo-item active" data-ing="fromage_blanc" onclick="toggleIng(this)"><span class="dot"></span>Fromage blanc 0%</div>
-    <div class="frigo-item active" data-ing="yaourt_grec" onclick="toggleIng(this)"><span class="dot"></span>Yaourt grec 0%</div>
-    <div class="frigo-item active" data-ing="lait" onclick="toggleIng(this)"><span class="dot"></span>Lait écrémé/demi</div>
-    <div class="frigo-item active" data-ing="caseine_choco" onclick="toggleIng(this)"><span class="dot"></span>Caséine chocolat</div>
-    <div class="frigo-item active" data-ing="whey_cookie" onclick="toggleIng(this)"><span class="dot"></span>Whey biscuit cookie</div>
-    <div class="frigo-item active" data-ing="whey_cc" onclick="toggleIng(this)"><span class="dot"></span>Whey cookies &amp; cream</div>
-    <div class="frigo-item active" data-ing="fruits_rouges" onclick="toggleIng(this)"><span class="dot"></span>Fruits rouges congelés</div>
-    <div class="frigo-item active" data-ing="mangue" onclick="toggleIng(this)"><span class="dot"></span>Mangue congelée</div>
-    <div class="frigo-item active" data-ing="fraises" onclick="toggleIng(this)"><span class="dot"></span>Fraises congelées</div>
-    <div class="frigo-item active" data-ing="miel" onclick="toggleIng(this)"><span class="dot"></span>Miel</div>
-    <div class="frigo-item active" data-ing="vanilla_drops" onclick="toggleIng(this)"><span class="dot"></span>Vanilla drops</div>
-    <div class="frigo-item active" data-ing="guar_gum" onclick="toggleIng(this)"><span class="dot"></span>Guar gum</div>
-    <div class="frigo-item" data-ing="puree_noisette" onclick="toggleIng(this)"><span class="dot"></span>Purée noisette 100%</div>
-    <div class="frigo-item" data-ing="erythritol" onclick="toggleIng(this)"><span class="dot"></span>Érythritol</div>
-    <div class="frigo-item active" data-ing="oreo" onclick="toggleIng(this)"><span class="dot"></span>Oréos</div>
-  </div>
-  <div class="frigo-reset" onclick="resetFrigo()">Tout décocher</div>
-</div>
+<header>
+  <div class="header-title">🧊 Ninja Creami Tracker</div>
+  <button class="dark-toggle" id="darkToggle" title="Dark mode">🌙</button>
+</header>
 
-<!-- FILTERS -->
-<div class="filter-bar">
-  <span class="filter-label">Filtrer :</span>
-  <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">Toutes</button>
-  <button class="filter-btn" data-filter="glace" onclick="setFilter(this)">Glace</button>
-  <button class="filter-btn" data-filter="froyo" onclick="setFilter(this)">Frozen Yogurt</button>
-  <button class="filter-btn" data-filter="milkshake" onclick="setFilter(this)">Milkshake</button>
-</div>
+<div class="container">
+  
+  <!-- FRIGO -->
+  <div class="frigo-panel">
+    <div class="frigo-title" onclick="toggleFrigoCollapse()">
+      <span class="frigo-toggle-btn" id="frigoToggleBtn">▼</span>
+      Mon frigo / congélo — coche ce que tu as
+    </div>
+    <div class="frigo-content" id="frigoContent">
+      <!-- Dynamique JS -->
+    </div>
+    <div class="frigo-reset" onclick="resetFrigo()">Tout décocher</div>
+  </div>
 
-<div class="results-count" id="resultsCount"></div>
-<div class="empty-state" id="emptyState">Aucune recette disponible avec tes ingrédients actuels.</div>
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">Toutes</button>
+    <button class="filter-btn" data-filter="glace" onclick="setFilter(this)">Glace</button>
+    <button class="filter-btn" data-filter="froyo" onclick="setFilter(this)">Frozen Yogurt</button>
+    <button class="filter-btn" data-filter="milkshake" onclick="setFilter(this)">Milkshake</button>
+    <button class="filter-btn" data-filter="prepared" onclick="setFilter(this)">📅 Préparées</button>
+    <button class="filter-btn" data-filter="archived" onclick="setFilter(this)">📦 Archivées</button>
+  </div>
 
-<!-- ===== R1 : GLACE CHOCOLAT BASE FROMAGE BLANC ===== -->
-<div class="recipe-card" data-type="glace" data-needs="fromage_blanc,lait,caseine_choco,miel,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Glace chocolat protéinée — base fromage blanc</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~32g protéines</span>
-        <span class="badge b-base">Fromage blanc 0%</span>
-        <span class="badge b-flavor">Caséine chocolat</span>
-        <span class="source-tag">✓ ninjagourmand.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
+  <!-- STATS -->
+  <div class="stats">
+    <span id="statsText"></span>
   </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Fromage blanc 0%</td><td>300g</td></tr>
-        <tr><td>Lait écrémé</td><td>100 ml</td></tr>
-        <tr><td>Caséine chocolat</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Guar gum</td><td>0,20g (balance précision)</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer tous les ingrédients dans un bol séparé au mixeur plongeant — bien dissoudre la caséine</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot Ninja jusqu'à la ligne MAX, lisser, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Tempérer 5 min, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Si friable ou poudreuse : ajouter 1–2 c. à s. de lait dans le puits + Re-Spin</span></div>
-      </div>
-      <div class="tip-box"><strong>Pourquoi fromage blanc ?</strong> <strong>ninjagourmand.com</strong> confirme que le fromage blanc apporte une texture plus ferme et fraîche, parfois proche du frozen yogurt — il laisse la caséine chocolat s'exprimer sans concurrence. Le programme Lite Ice Cream est recommandé pour toutes les bases riches en protéines.</div>
-      <div class="source-box">Source : <a href="https://ninjagourmand.com/glace-chocolat-proteinee-avec-le-ninja-creami-deluxe/" target="_blank">ninjagourmand.com — Glace chocolat protéinée Ninja Creami Deluxe</a></div>
-      <div class="macros"><span class="macro">~32g prot</span><span class="macro">~3g lipides</span><span class="macro">~20g glucides</span><span class="macro">~240 kcal</span></div>
-    </div>
-  </div>
-</div>
 
-<!-- ===== R2 : FROZEN YOGURT YAOURT GREC VANILLE ===== -->
-<div class="recipe-card" data-type="froyo" data-needs="yaourt_grec,lait,whey_cookie,miel,vanilla_drops,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Frozen yogurt vanille biscuit cookie</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~30g protéines</span>
-        <span class="badge b-base">Yaourt grec 0%</span>
-        <span class="badge b-flavor">Whey biscuit cookie</span>
-        <span class="source-tag">✓ georgeats.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
+  <!-- RECIPES GRID -->
+  <div class="recipes-grid" id="recipesGrid">
+    <!-- Dynamique JS -->
   </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Yaourt grec 0%</td><td>260g</td></tr>
-        <tr><td>Lait écrémé</td><td>100 ml</td></tr>
-        <tr><td>Whey biscuit cookie</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>6 gouttes</td></tr>
-        <tr><td>Guar gum</td><td>0,20g (balance précision)</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mélanger au mixeur plongeant dans un bol séparé — bien homogénéiser</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Passer 30 sec sous eau tiède, tempérer 5 min, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Après le spin, texture souvent un peu friable — Re-Spin avec une touche de lait</span></div>
-      </div>
-      <div class="tip-box"><strong>georgeats.com</strong> : le miel (ou sirop d'agave) est indispensable même en petite quantité — il abaisse le point de congélation et évite les cristaux de glace caractéristiques des bases sans matière grasse. Sans sucrant, la texture sera dure et granuleuse.</div>
-      <div class="source-box">Source : <a href="https://georgeats.com/ninja-creami-recipes/ninja-creami-frozen-yogurt-high-protein/" target="_blank">georgeats.com — Ninja Creami Frozen Yogurt high protein</a></div>
-      <div class="macros"><span class="macro">~30g prot</span><span class="macro">~2g lipides</span><span class="macro">~22g glucides</span><span class="macro">~230 kcal</span></div>
-    </div>
-  </div>
-</div>
 
-<!-- ===== R3 : FROZEN YOGURT MANGUE ===== -->
-<div class="recipe-card" data-type="froyo" data-needs="yaourt_grec,lait,mangue,miel,vanilla_drops">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Frozen yogurt mangue — 4 ingrédients</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~22g protéines</span>
-        <span class="badge b-base">Yaourt grec 0%</span>
-        <span class="badge b-flavor">Mangue congelée</span>
-        <span class="source-tag">✓ eatthegains.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
+  <div class="empty-state" id="emptyState" style="display: none;">
+    Aucune recette disponible avec tes ingrédients actuels.
   </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span><span>+ Re-Spin systématique</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — directement dans le pot Ninja (recette validée sans bol séparé)</div>
-      <table class="ingr-table">
-        <tr><td>Yaourt grec 0%</td><td>300g</td></tr>
-        <tr><td>Mangue congelée décongelée et mixée</td><td>100g</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>5 gouttes</td></tr>
-        <tr><td>Pincée de sel</td><td>1 pincée</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Décongeler légèrement la mangue, la mixer en purée dans un bol séparé</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Mélanger yaourt + purée mangue + miel + vanilla drops + sel directement dans le pot Ninja — bien mélanger à la cuillère</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Lisser la surface, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Passer sous eau tiède 30 sec, tempérer 5 min, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>La texture sera friable au premier spin — c'est normal. Re-Spin une fois</span></div>
-      </div>
-      <div class="tip-box"><strong>eatthegains.com</strong> (recette testée, notée 5 étoiles) : cette recette n'utilise que 4 ingrédients de base. La mangue apporte ses propres sucres naturels qui aident le point de congélation — pas besoin de sucrant en grande quantité. La texture après Re-Spin est très crémeuse grâce à l'eau contenue dans les fruits.<br><br>Tu peux ajouter 1 dose de whey biscuit cookie pour booster les protéines à ~32g.</div>
-      <div class="source-box">Source : <a href="https://eatthegains.com/ninja-creami-frozen-yogurt/" target="_blank">eatthegains.com — Mango Ninja Creami Frozen Yogurt (4 ingredients)</a></div>
-      <div class="macros"><span class="macro">~22g prot (base)</span><span class="macro">~2g lipides</span><span class="macro">~28g glucides</span><span class="macro">~210 kcal</span></div>
-    </div>
-  </div>
-</div>
 
-<!-- ===== R4 : FROZEN YOGURT MANGUE + CASÉINE COOKIE ===== -->
-<div class="recipe-card" data-type="froyo" data-needs="yaourt_grec,lait,mangue,whey_cookie,miel,vanilla_drops,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Frozen yogurt mangue &amp; biscuit cookie — version protéinée</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~33g protéines</span>
-        <span class="badge b-base">Yaourt grec 0%</span>
-        <span class="badge b-flavor">Mangue + Whey biscuit cookie</span>
-        <span class="source-tag">✓ eatthegains.com + ice-creami.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span><span>puis optionnel</span><span class="mixin-tag">Mix-In</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Yaourt grec 0%</td><td>230g</td></tr>
-        <tr><td>Lait écrémé</td><td>80 ml</td></tr>
-        <tr><td>Mangue congelée mixée en purée</td><td>90g</td></tr>
-        <tr><td>Whey biscuit cookie</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>5 gouttes</td></tr>
-        <tr><td>Guar gum</td><td>0,20g</td></tr>
-      </table>
-      <div class="section-label">Mix-in optionnel — ramequin séparé</div>
-      <table class="ingr-table">
-        <tr><td>Dés de mangue congelée tempérés 10 min</td><td>30g</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer la mangue en purée dans un bol séparé, ajouter tous les ingrédients, mixer au plongeant</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Tempérer 5 min, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Re-Spin si texture friable, avec 1 c. à s. de lait</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>Optionnel : puits 4 cm → dés de mangue tempérés → Mix-In</span></div>
-      </div>
-      <div class="tip-box"><strong>ice-creami.com</strong> valide la combinaison yaourt grec + lait + protéine vanille + mangue congelée comme base crémeuse qui fonctionne. L'acidité tropicale de la mangue équilibre le côté sucré-biscuité de la whey.</div>
-      <div class="source-box">Sources : <a href="https://eatthegains.com/ninja-creami-frozen-yogurt/" target="_blank">eatthegains.com</a> · <a href="https://ice-creami.com/en/mango-protein-ice-cream-recipe" target="_blank">ice-creami.com — Mango protein ice cream</a></div>
-      <div class="macros"><span class="macro">~33g prot</span><span class="macro">~3g lipides</span><span class="macro">~27g glucides</span><span class="macro">~255 kcal</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== R5 : FROZEN YOGURT FRAISES ===== -->
-<div class="recipe-card" data-type="froyo" data-needs="yaourt_grec,fraises,miel,vanilla_drops">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Frozen yogurt fraises — base testée georgeats</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~20g protéines</span>
-        <span class="badge b-base">Yaourt grec 0%</span>
-        <span class="badge b-flavor">Fraises congelées</span>
-        <span class="source-tag">✓ georgeats.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Yaourt grec 0%</td><td>300g</td></tr>
-        <tr><td>Fraises congelées mixées en purée</td><td>100g</td></tr>
-        <tr><td>Miel ou sirop d'agave</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>4 gouttes</td></tr>
-        <tr><td>Pincée de sel</td><td>1 pincée</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer les fraises congelées en purée lisse dans un bol séparé</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Ajouter yaourt + miel + vanilla drops + sel, mélanger jusqu'à texture homogène rose pâle</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Passer sous eau tiède 30 sec, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>Re-Spin si nécessaire</span></div>
-      </div>
-      <div class="tip-box"><strong>georgeats.com</strong> a testé cette recette avec fraises et mangue — les deux fonctionnent très bien. Les fruits rouges/roses apportent une acidité qui contre la monotonie du yaourt nature et abaissent naturellement le point de congélation.<br><br>Ajouter 1 dose de caséine chocolat ou biscuit cookie pour monter à ~30–33g de protéines.</div>
-      <div class="source-box">Source : <a href="https://georgeats.com/recipes/ninja-creami-protein-ice-cream-5-ways/" target="_blank">georgeats.com — Ninja Creami protein ice cream 5 ways</a></div>
-      <div class="macros"><span class="macro">~20g prot (base)</span><span class="macro">~2g lipides</span><span class="macro">~22g glucides</span><span class="macro">~185 kcal</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== R6 : GLACE CHOCOLAT FRUITS ROUGES ===== -->
-<div class="recipe-card" data-type="glace" data-needs="fromage_blanc,yaourt_grec,lait,fruits_rouges,caseine_choco,miel,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Glace chocolat &amp; fruits rouges</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~31g protéines</span>
-        <span class="badge b-base">Fromage blanc + Yaourt grec</span>
-        <span class="badge b-flavor">Caséine chocolat + Fruits rouges</span>
-        <span class="source-tag">✓ ninjagourmand.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Fromage blanc 0%</td><td>150g</td></tr>
-        <tr><td>Yaourt grec 0%</td><td>120g</td></tr>
-        <tr><td>Lait écrémé</td><td>90 ml</td></tr>
-        <tr><td>Fruits rouges congelés, mixés en purée</td><td>80g</td></tr>
-        <tr><td>Caséine chocolat</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Guar gum</td><td>0,20g</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer les fruits rouges en purée, ajouter tous les autres ingrédients dans un bol séparé, mixer au plongeant</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Tempérer 5 min, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Si friable : 1–2 c. à s. de lait + Re-Spin</span></div>
-      </div>
-      <div class="tip-box"><strong>ninjagourmand.com</strong> recommande d'associer yaourt grec + fromage blanc pour les bases riches en protéines : le yaourt grec apporte onctuosité et tenue, le fromage blanc apporte la fraîcheur et allège la texture. Les fruits rouges dans la base abaissent le point de congélation et équilibrent l'amertume du chocolat.</div>
-      <div class="source-box">Source : <a href="https://ninjagourmand.com/les-meilleures-bases-proteinees-pour-ninja-creami/" target="_blank">ninjagourmand.com — Les meilleures bases protéinées pour Ninja Creami</a></div>
-      <div class="macros"><span class="macro">~31g prot</span><span class="macro">~3g lipides</span><span class="macro">~23g glucides</span><span class="macro">~245 kcal</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== R7 : GLACE NOISETTE BISCUIT ===== -->
-<div class="recipe-card" data-type="glace" data-needs="fromage_blanc,lait,whey_cookie,puree_noisette,miel,vanilla_drops,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Glace noisette biscuit crème</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~30g protéines</span>
-        <span class="badge b-base">Fromage blanc 0%</span>
-        <span class="badge b-flavor">Purée noisette + Biscuit cookie</span>
-        <span class="source-tag">✓ ninjagourmand.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span><span>puis</span><span class="mixin-tag">Mix-In</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">À acheter si pas encore fait</div>
-      <table class="ingr-table">
-        <tr><td>Purée de noisette 100% (Jean Hervé, Biogrande)</td><td>Biocoop / Naturalia / Amazon</td></tr>
-      </table>
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Fromage blanc 0%</td><td>260g</td></tr>
-        <tr><td>Lait demi-écrémé</td><td>90 ml</td></tr>
-        <tr><td>Whey biscuit cookie</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Purée de noisette 100%</td><td>20g</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>5 gouttes</td></tr>
-        <tr><td>Guar gum</td><td>0,20g</td></tr>
-      </table>
-      <div class="section-label">Mix-in — ramequin séparé</div>
-      <table class="ingr-table">
-        <tr><td>Spéculoos ou petit-beurre écrasé grossièrement</td><td>15g</td></tr>
-        <tr><td>Noisettes légèrement concassées</td><td>10g</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer tous les ingrédients de la base au mixeur plongeant dans un bol séparé — la purée de noisette doit être parfaitement intégrée, sans grumeaux gras</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Tempérer 7–8 min (la purée de noisette rend la base plus dense — tempérer plus longtemps)</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Lancer FULL → Lite Ice Cream. Re-Spin si compacte</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>Puits 4 cm → spéculoos + noisettes (ramequin) → Mix-In</span></div>
-      </div>
-      <div class="tip-box"><strong>ninjagourmand.com</strong> confirme que la purée de noisette agit comme émulsifiant naturel grâce à ses matières grasses — elle donne une texture proche d'une vraie gelato sans crème. C'est une des recettes les plus premium en texture parmi les bases protéinées légères.</div>
-      <div class="source-box">Source : <a href="https://ninjagourmand.com/glace-chocolat-praline-proteinee-avec-le-ninja-creami-deluxe/" target="_blank">ninjagourmand.com — Glace chocolat praliné protéinée</a></div>
-      <div class="macros"><span class="macro">~30g prot</span><span class="macro">~14g lipides</span><span class="macro">~18g glucides</span><span class="macro">~305 kcal</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== R8 : MILKSHAKE CHOCOLAT FRUITS ROUGES ===== -->
-<div class="recipe-card" data-type="milkshake" data-needs="fromage_blanc,yaourt_grec,lait,fruits_rouges,caseine_choco,miel,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Milkshake chocolat &amp; fruits rouges</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~30g protéines</span>
-        <span class="badge b-base">Fromage blanc + Yaourt grec</span>
-        <span class="badge b-flavor">Caséine chocolat + Fruits rouges</span>
-        <span class="source-tag">✓ ninjagourmand.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Milkshake</span><span>+ Re-Spin avec lait pour fluidifier</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Fromage blanc 0%</td><td>120g</td></tr>
-        <tr><td>Yaourt grec 0%</td><td>80g</td></tr>
-        <tr><td>Lait écrémé</td><td>130 ml</td></tr>
-        <tr><td>Fruits rouges congelés mixés en purée</td><td>70g</td></tr>
-        <tr><td>Caséine chocolat</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Guar gum</td><td>0,15g</td></tr>
-      </table>
-      <div class="section-label">À ajouter après spin</div>
-      <table class="ingr-table">
-        <tr><td>Lait écrémé froid</td><td>100–120 ml (caséine épaissit plus que whey)</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer fruits rouges en purée, ajouter tous les ingrédients de la base dans un bol séparé, mixer au plongeant</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Tempérer 5–8 min, lancer FULL → Milkshake</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Verser 100–120 ml de lait froid dans le puits, Re-Spin — ajouter par 20 ml à la fois si encore trop épais</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>Boire immédiatement — ne pas recongeler après mode Milkshake</span></div>
-      </div>
-      <div class="tip-box"><strong>ninjagourmand.com</strong> : la méthode validée pour le milkshake est de congeler la base puis d'ajouter le lait après le spin pour fluidifier. Avec la caséine (plus épaissante que la whey), il faut plus de lait dans la base ET après le spin — c'est le correctif appliqué ici par rapport à la version initiale.<br><br>Les fruits rouges dans la base coupent le côté épais-sucré de la caséine chocolat.</div>
-      <div class="source-box">Source : <a href="https://ninjagourmand.com/milkshake-proteine-ninja-creami-deluxe/" target="_blank">ninjagourmand.com — Milkshake protéiné Ninja Creami Deluxe</a></div>
-      <div class="macros"><span class="macro">~30g prot</span><span class="macro">~3g lipides</span><span class="macro">~24g glucides</span><span class="macro">~245 kcal</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== R9 : GLACE COOKIES AND CREAM ===== -->
-<div class="recipe-card" data-type="glace" data-needs="fromage_blanc,lait,whey_cc,miel,vanilla_drops,guar_gum">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Glace cookies &amp; cream glacée</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~31g protéines</span>
-        <span class="badge b-base">Fromage blanc 0%</span>
-        <span class="badge b-flavor">Whey cookies &amp; cream</span>
-        <span class="source-tag">✓ lifestyleofafoodie.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span><span>puis</span><span class="mixin-tag">Mix-In</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Fromage blanc 0%</td><td>280g</td></tr>
-        <tr><td>Lait écrémé</td><td>100 ml</td></tr>
-        <tr><td>Whey cookies &amp; cream</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>6 gouttes</td></tr>
-        <tr><td>Guar gum</td><td>0,20g</td></tr>
-      </table>
-      <div class="section-label">Mix-in — ramequin séparé</div>
-      <table class="ingr-table">
-        <tr><td>1 biscuit Oréo ou chocolat écrasé grossièrement</td><td>~12g</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer la base dans un bol séparé au mixeur plongeant</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Écraser le biscuit dans un ramequin, laisser à température ambiante</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Tempérer 5 min, lancer FULL → Lite Ice Cream</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>Re-Spin si friable. Puits 4 cm → biscuit → Mix-In</span></div>
-      </div>
-      <div class="tip-box"><strong>lifestyleofafoodie.com</strong> valide la base yaourt/fromage blanc + miel + vanilla + protéine pour les frozen yogurts et glaces protéinées. Le Mix-In de biscuit après spin est la méthode standard recommandée — les inclusions ne doivent jamais être dans la base congelée.</div>
-      <div class="source-box">Source : <a href="https://lifestyleofafoodie.com/ninja-creami-frozen-yogurt/" target="_blank">lifestyleofafoodie.com — Ninja Creami Frozen Yogurt</a></div>
-      <div class="macros"><span class="macro">~31g prot</span><span class="macro">~4g lipides</span><span class="macro">~21g glucides</span><span class="macro">~250 kcal</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== R10 : GLACE OREO ===== -->
-<div class="recipe-card" data-type="glace" data-needs="yaourt_grec,lait,whey_cc,miel,vanilla_drops,guar_gum,oreo">
-  <div class="recipe-header" onclick="toggle(this)">
-    <div style="flex:1">
-      <div class="recipe-name">Glace Oréo protéinée — effet McFlurry</div>
-      <div class="recipe-meta">
-        <span class="badge b-prot">~32g protéines</span>
-        <span class="badge b-base">Yaourt grec 0%</span>
-        <span class="badge b-flavor">Whey cookies &amp; cream + Oréos</span>
-        <span class="source-tag">✓ oliviaskitchen.com · basicswithbails.com</span>
-      </div>
-    </div>
-    <span class="recipe-toggle">+</span>
-  </div>
-  <div class="mode-bar"><span>Mode :</span><span class="mode-tag">Lite Ice Cream</span><span>→ Re-Spin</span><span>→</span><span class="mixin-tag">Mix-In</span></div>
-  <div class="recipe-body">
-    <div class="rb-inner">
-      <div class="section-label">Base — bol séparé</div>
-      <table class="ingr-table">
-        <tr><td>Yaourt grec 0%</td><td>260g</td></tr>
-        <tr><td>Lait écrémé</td><td>110 ml</td></tr>
-        <tr><td>Whey cookies &amp; cream</td><td>1 dose (~25g)</td></tr>
-        <tr><td>Miel</td><td>1 c. à s.</td></tr>
-        <tr><td>Vanilla drops</td><td>6 gouttes</td></tr>
-        <tr><td>Guar gum</td><td>0,20g (balance de précision)</td></tr>
-      </table>
-      <div class="section-label">Mix-In — ramequin séparé, température ambiante</div>
-      <table class="ingr-table">
-        <tr><td>Oréos écrasés grossièrement (pas en poudre fine)</td><td>2 biscuits (~22g)</td></tr>
-      </table>
-      <div class="section-label">Protocole</div>
-      <div class="steps-list">
-        <div class="step-row"><span class="step-n">1.</span><span>Mixer tous les ingrédients de la base dans un bol séparé au mixeur plongeant ou shaker — bien dissoudre la caséine, aucun grumeau</span></div>
-        <div class="step-row"><span class="step-n">2.</span><span>Verser dans le pot Ninja jusqu'à la ligne MAX, lisser la surface, congeler 24h à plat</span></div>
-        <div class="step-row"><span class="step-n">3.</span><span>Écraser les 2 Oréos grossièrement dans un ramequin — viser des morceaux de 0,5–1 cm, pas de la poudre fine. Laisser à température ambiante</span></div>
-        <div class="step-row"><span class="step-n">4.</span><span>Sortir le pot, passer 30–60 sec sous eau tiède, tempérer 5 min</span></div>
-        <div class="step-row"><span class="step-n">5.</span><span>Lancer <strong>FULL → Lite Ice Cream</strong></span></div>
-        <div class="step-row"><span class="step-n">6.</span><span>La texture sera souvent un peu friable au premier spin — c'est normal. Ajouter 1 c. à s. de lait dans le puits central, lancer <strong>Re-Spin</strong></span></div>
-        <div class="step-row"><span class="step-n">7.</span><span>Creuser un puits de 4 cm jusqu'au fond, déposer les morceaux d'Oréo du ramequin, lancer <strong>Mix-In</strong></span></div>
-      </div>
-      <div class="tip-box"><strong>Règle absolue validée par oliviaskitchen.com et basicswithbails.com :</strong> les Oréos ne vont <em>jamais</em> dans la base congelée. Congelés dans la base ils deviennent une pâte indistincte sans texture ni croquant. En Mix-In après le spin, les morceaux restent entiers et donnent un vrai effet cookies &amp; cream à chaque cuillère — exactement comme un McFlurry.<br><br><strong>Pourquoi 2 Oréos et pas plus ?</strong> 2 biscuits (~22g) restent dans la limite des 45g max recommandés pour le Mix-In sur le Deluxe. Au-delà, la pale force et le résultat est inégal. Si tu veux plus d'Oréo, ajoute-en 1 supplémentaire en topping par-dessus, pas dans le puits.<br><br><strong>Whey cookies &amp; cream dans la base + Oréos en Mix-In</strong> = double effet biscuit, texture plus intense que si tu utilisais une caséine neutre.</div>
-      <div class="source-box">Sources : <a href="https://oliviaskitchen.com/oreo-protein-creami/" target="_blank">oliviaskitchen.com — Cookies &amp; Cream Protein Ice Cream Ninja Creami</a> · <a href="https://basicswithbails.com/diet/high-protein/cookies-and-cream-ninja-creami-protein-ice-cream/" target="_blank">basicswithbails.com — Cookies and Cream Ninja Creami Protein Ice Cream</a></div>
-      <div class="macros"><span class="macro">~32g prot</span><span class="macro">~6g lipides</span><span class="macro">~26g glucides</span><span class="macro">~285 kcal</span></div>
-    </div>
-  </div>
 </div>
 
 <script>
-const activeIngs = new Set([
-  'fromage_blanc','yaourt_grec','lait','caseine_choco','whey_cookie',
-  'whey_cc','fruits_rouges','mangue','fraises','miel','vanilla_drops','guar_gum','oreo'
-]);
+// ==== RECIPES JSON ====
+const recipesData = [
+  {
+    id: "r001",
+    title: "Glace chocolat protéinée — base fromage blanc",
+    type: "glace",
+    difficulty: "facile",
+    proteinType: "Caséine chocolat",
+    proteinGrams: 32,
+    ingredients: {
+      base: [
+        { name: "Fromage blanc 0%", amount: 300, unit: "g" },
+        { name: "Lait écrémé", amount: 100, unit: "ml" },
+        { name: "Caséine chocolat", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Mixer tous les ingrédients dans un bol séparé au mixeur plongeant",
+      "Verser dans le pot jusqu'à la ligne MAX, lisser, congeler 24h à plat",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Si friable : 1 c. à s. de lait dans le puits + Re-Spin"
+    ],
+    source: "ninjagourmand.com",
+    macros: { proteins: 32, fats: 3, carbs: 20, calories: 240 },
+    requiredIngredients: ["fromage_blanc", "lait", "caseine_choco", "miel", "guar_gum"]
+  },
+  {
+    id: "r002",
+    title: "Frozen yogurt vanille biscuit cookie",
+    type: "froyo",
+    difficulty: "facile",
+    proteinType: "Whey biscuit cookie",
+    proteinGrams: 30,
+    ingredients: {
+      base: [
+        { name: "Yaourt grec 0%", amount: 260, unit: "g" },
+        { name: "Lait écrémé", amount: 100, unit: "ml" },
+        { name: "Whey biscuit cookie", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 6, unit: "gouttes" },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Mélanger au mixeur plongeant dans un bol séparé",
+      "Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat",
+      "Passer 30 sec sous eau tiède, tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Re-Spin si friable avec une touche de lait"
+    ],
+    source: "georgeats.com",
+    macros: { proteins: 30, fats: 2, carbs: 22, calories: 230 },
+    requiredIngredients: ["yaourt_grec", "lait", "whey_cookie", "miel", "vanilla_drops", "guar_gum"]
+  },
+  {
+    id: "r003",
+    title: "Frozen yogurt mangue — 4 ingrédients",
+    type: "froyo",
+    difficulty: "facile",
+    proteinType: "Yaourt grec naturel",
+    proteinGrams: 22,
+    ingredients: {
+      base: [
+        { name: "Yaourt grec 0%", amount: 300, unit: "g" },
+        { name: "Mangue congelée mixée", amount: 100, unit: "g" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 5, unit: "gouttes" },
+        { name: "Pincée de sel", amount: 1, unit: "pincée" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Décongeler légèrement la mangue, la mixer en purée",
+      "Mélanger yaourt + purée mangue + miel + vanilla drops + sel",
+      "Lisser la surface, congeler 24h à plat",
+      "Passer sous eau tiède 30 sec, tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "La texture sera friable au premier spin — Re-Spin une fois"
+    ],
+    source: "eatthegains.com",
+    macros: { proteins: 22, fats: 2, carbs: 28, calories: 210 },
+    requiredIngredients: ["yaourt_grec", "mangue", "miel", "vanilla_drops"]
+  },
+  {
+    id: "r004",
+    title: "Frozen yogurt mangue & biscuit cookie — protéinée",
+    type: "froyo",
+    difficulty: "moyen",
+    proteinType: "Whey biscuit cookie",
+    proteinGrams: 33,
+    ingredients: {
+      base: [
+        { name: "Yaourt grec 0%", amount: 230, unit: "g" },
+        { name: "Lait écrémé", amount: 80, unit: "ml" },
+        { name: "Mangue congelée mixée", amount: 90, unit: "g" },
+        { name: "Whey biscuit cookie", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 5, unit: "gouttes" },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ],
+      mixins: [
+        { name: "Dés mangue tempérés 10 min", amount: 30, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream + Mix-In",
+    respin: true,
+    protocol: [
+      "Mixer la mangue en purée, ajouter tous les ingrédients, mixer",
+      "Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Re-Spin si texture friable, avec 1 c. à s. de lait",
+      "Optionnel : puits 4 cm → dés de mangue tempérés → Mix-In"
+    ],
+    source: "eatthegains.com + ice-creami.com",
+    macros: { proteins: 33, fats: 3, carbs: 27, calories: 255 },
+    requiredIngredients: ["yaourt_grec", "lait", "mangue", "whey_cookie", "miel", "vanilla_drops", "guar_gum"]
+  },
+  {
+    id: "r005",
+    title: "Frozen yogurt fraises",
+    type: "froyo",
+    difficulty: "facile",
+    proteinType: "Yaourt grec naturel",
+    proteinGrams: 20,
+    ingredients: {
+      base: [
+        { name: "Yaourt grec 0%", amount: 300, unit: "g" },
+        { name: "Fraises congelées mixées", amount: 100, unit: "g" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 4, unit: "gouttes" },
+        { name: "Pincée de sel", amount: 1, unit: "pincée" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Mixer les fraises congelées en purée lisse",
+      "Ajouter yaourt + miel + vanilla drops + sel, mélanger",
+      "Verser dans le pot jusqu'à la ligne MAX, congeler 24h à plat",
+      "Passer sous eau tiède 30 sec, lancer FULL → Lite Ice Cream",
+      "Re-Spin si nécessaire"
+    ],
+    source: "georgeats.com",
+    macros: { proteins: 20, fats: 2, carbs: 22, calories: 185 },
+    requiredIngredients: ["yaourt_grec", "fraises", "miel", "vanilla_drops"]
+  },
+  {
+    id: "r006",
+    title: "Glace chocolat & fruits rouges",
+    type: "glace",
+    difficulty: "moyen",
+    proteinType: "Caséine chocolat",
+    proteinGrams: 31,
+    ingredients: {
+      base: [
+        { name: "Fromage blanc 0%", amount: 150, unit: "g" },
+        { name: "Yaourt grec 0%", amount: 120, unit: "g" },
+        { name: "Lait écrémé", amount: 90, unit: "ml" },
+        { name: "Fruits rouges congelés mixés", amount: 80, unit: "g" },
+        { name: "Caséine chocolat", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Mixer les fruits rouges en purée, ajouter tous les ingrédients",
+      "Verser dans le pot, congeler 24h à plat",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Si friable : 1–2 c. à s. de lait + Re-Spin"
+    ],
+    source: "ninjagourmand.com",
+    macros: { proteins: 31, fats: 3, carbs: 23, calories: 245 },
+    requiredIngredients: ["fromage_blanc", "yaourt_grec", "lait", "fruits_rouges", "caseine_choco", "miel", "guar_gum"]
+  },
+  {
+    id: "r007",
+    title: "Glace noisette biscuit crème",
+    type: "glace",
+    difficulty: "moyen",
+    proteinType: "Whey biscuit cookie + Purée noisette",
+    proteinGrams: 30,
+    ingredients: {
+      base: [
+        { name: "Fromage blanc 0%", amount: 260, unit: "g" },
+        { name: "Lait demi-écrémé", amount: 90, unit: "ml" },
+        { name: "Whey biscuit cookie", amount: 1, unit: "dose" },
+        { name: "Purée noisette 100%", amount: 20, unit: "g" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 5, unit: "gouttes" },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ],
+      mixins: [
+        { name: "Spéculoos écrasé", amount: 15, unit: "g" },
+        { name: "Noisettes concassées", amount: 10, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream + Mix-In",
+    respin: true,
+    protocol: [
+      "Mixer tous les ingrédients au mixeur plongeant — bien intégrer la purée noisette",
+      "Verser dans le pot, congeler 24h à plat",
+      "Tempérer 7–8 min (purée noisette rend plus dense)",
+      "Lancer FULL → Lite Ice Cream, Re-Spin si compacte",
+      "Puits 4 cm → spéculoos + noisettes → Mix-In"
+    ],
+    source: "ninjagourmand.com",
+    macros: { proteins: 30, fats: 14, carbs: 18, calories: 305 },
+    requiredIngredients: ["fromage_blanc", "lait", "whey_cookie", "puree_noisette", "miel", "vanilla_drops", "guar_gum"]
+  },
+  {
+    id: "r008",
+    title: "Milkshake chocolat & fruits rouges",
+    type: "milkshake",
+    difficulty: "moyen",
+    proteinType: "Caséine chocolat",
+    proteinGrams: 30,
+    ingredients: {
+      base: [
+        { name: "Fromage blanc 0%", amount: 120, unit: "g" },
+        { name: "Yaourt grec 0%", amount: 80, unit: "g" },
+        { name: "Lait écrémé", amount: 130, unit: "ml" },
+        { name: "Fruits rouges congelés mixés", amount: 70, unit: "g" },
+        { name: "Caséine chocolat", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Guar gum", amount: 0.15, unit: "g" }
+      ]
+    },
+    mode: "Milkshake",
+    respin: true,
+    protocol: [
+      "Mixer fruits rouges en purée, ajouter tous les ingrédients",
+      "Verser dans le pot, congeler 24h à plat",
+      "Tempérer 5–8 min, lancer FULL → Milkshake",
+      "Verser 100–120 ml de lait froid dans le puits, Re-Spin",
+      "Boire immédiatement — ne pas recongeler"
+    ],
+    source: "ninjagourmand.com",
+    macros: { proteins: 30, fats: 3, carbs: 24, calories: 245 },
+    requiredIngredients: ["fromage_blanc", "yaourt_grec", "lait", "fruits_rouges", "caseine_choco", "miel", "guar_gum"]
+  },
+  {
+    id: "r009",
+    title: "Glace cookies & cream",
+    type: "glace",
+    difficulty: "facile",
+    proteinType: "Whey cookies & cream",
+    proteinGrams: 31,
+    ingredients: {
+      base: [
+        { name: "Fromage blanc 0%", amount: 280, unit: "g" },
+        { name: "Lait écrémé", amount: 100, unit: "ml" },
+        { name: "Whey cookies & cream", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 6, unit: "gouttes" },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ],
+      mixins: [
+        { name: "Oréo écrasé", amount: 12, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream + Mix-In",
+    respin: true,
+    protocol: [
+      "Mixer la base au mixeur plongeant",
+      "Verser dans le pot, congeler 24h à plat",
+      "Écraser le biscuit dans un ramequin",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Re-Spin si friable, puits 4 cm → biscuit → Mix-In"
+    ],
+    source: "lifestyleofafoodie.com",
+    macros: { proteins: 31, fats: 4, carbs: 21, calories: 250 },
+    requiredIngredients: ["fromage_blanc", "lait", "whey_cc", "miel", "vanilla_drops", "guar_gum", "oreo"]
+  },
+  {
+    id: "r010",
+    title: "Glace Oréo protéinée — effet McFlurry",
+    type: "glace",
+    difficulty: "facile",
+    proteinType: "Whey cookies & cream",
+    proteinGrams: 32,
+    ingredients: {
+      base: [
+        { name: "Yaourt grec 0%", amount: 260, unit: "g" },
+        { name: "Lait écrémé", amount: 110, unit: "ml" },
+        { name: "Whey cookies & cream", amount: 1, unit: "dose" },
+        { name: "Miel", amount: 1, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 6, unit: "gouttes" },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ],
+      mixins: [
+        { name: "Oréos écrasés grossièrement", amount: 22, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream → Re-Spin → Mix-In",
+    respin: true,
+    protocol: [
+      "Mixer base au mixeur plongeant dans un bol séparé",
+      "Verser dans le pot jusqu'à MAX, congeler 24h à plat",
+      "Écraser 2 Oréos grossièrement dans ramequin",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Ajouter 1 c. à s. lait dans puits + Re-Spin",
+      "Puits 4 cm → Oréos → Mix-In"
+    ],
+    source: "oliviaskitchen.com · basicswithbails.com",
+    macros: { proteins: 32, fats: 6, carbs: 26, calories: 285 },
+    requiredIngredients: ["yaourt_grec", "lait", "whey_cc", "miel", "vanilla_drops", "guar_gum", "oreo"]
+  },
+  {
+    id: "r011",
+    title: "Glace spread pistachio protéiné",
+    type: "glace",
+    difficulty: "facile",
+    proteinType: "Spread pistachio",
+    proteinGrams: 28,
+    ingredients: {
+      base: [
+        { name: "Lait entier", amount: 350, unit: "ml" },
+        { name: "Spread protein pistachio", amount: 3, unit: "c. à s." },
+        { name: "Miel", amount: 2, unit: "c. à s." },
+        { name: "Guar gum", amount: 0.20, unit: "g" },
+        { name: "Pincée de sel", amount: 1, unit: "pincée" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Mixer tous ingrédients au mixeur plongeant",
+      "Verser dans pot, congeler 24h à plat",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Re-Spin si nécessaire"
+    ],
+    source: "laraclevenger.com",
+    macros: { proteins: 28, fats: 11, carbs: 24, calories: 275 },
+    requiredIngredients: ["lait", "spread_pistachio", "miel", "guar_gum"]
+  },
+  {
+    id: "r012",
+    title: "Glace chocolat noisette spread protéiné",
+    type: "glace",
+    difficulty: "facile",
+    proteinType: "Spread chocolat noisette",
+    proteinGrams: 27,
+    ingredients: {
+      base: [
+        { name: "Lait entier", amount: 350, unit: "ml" },
+        { name: "Spread protein choco noisette", amount: 3, unit: "c. à s." },
+        { name: "Miel", amount: 1.5, unit: "c. à s." },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ],
+      mixins: [
+        { name: "Pépites chocolat noir", amount: 20, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream + Mix-In",
+    respin: true,
+    protocol: [
+      "Mixer tous ingrédients au mixeur plongeant",
+      "Verser dans pot, congeler 24h à plat",
+      "Tempérer 5 min, lancer FULL → Lite Ice Cream",
+      "Re-Spin si nécessaire",
+      "Mix-In optionnel avec pépites"
+    ],
+    source: "basicswithbails.com",
+    macros: { proteins: 27, fats: 12, carbs: 23, calories: 280 },
+    requiredIngredients: ["lait", "spread_choco_noisette", "miel", "guar_gum"]
+  },
+  {
+    id: "r013",
+    title: "Glace milky nut spread protéiné",
+    type: "glace",
+    difficulty: "facile",
+    proteinType: "Spread milky nut",
+    proteinGrams: 26,
+    ingredients: {
+      base: [
+        { name: "Lait entier", amount: 360, unit: "ml" },
+        { name: "Spread protein milky nut", amount: 3, unit: "c. à s." },
+        { name: "Miel", amount: 1.5, unit: "c. à s." },
+        { name: "Vanilla drops", amount: 6, unit: "gouttes" },
+        { name: "Guar gum", amount: 0.20, unit: "g" }
+      ]
+    },
+    mode: "Lite Ice Cream",
+    respin: true,
+    protocol: [
+      "Mixer tous ingrédients",
+      "Verser dans pot, congeler 24h",
+      "Tempérer 5 min → Lite Ice Cream",
+      "Re-Spin si friable"
+    ],
+    source: "thebalancednutritionist.com",
+    macros: { proteins: 26, fats: 11, carbs: 24, calories: 270 },
+    requiredIngredients: ["lait", "spread_milky_nut", "miel", "vanilla_drops", "guar_gum"]
+  }
+];
 
-let currentFilter = 'all';
+// ==== INGREDIENTS MAPPING ====
+const ingredientsMap = {
+  fromage_blanc: "Fromage blanc 0%",
+  yaourt_grec: "Yaourt grec 0%",
+  lait: "Lait écrémé/demi",
+  caseine_choco: "Caséine chocolat",
+  whey_cookie: "Whey biscuit cookie",
+  whey_cc: "Whey cookies & cream",
+  fruits_rouges: "Fruits rouges congelés",
+  mangue: "Mangue congelée",
+  fraises: "Fraises congelées",
+  miel: "Miel",
+  vanilla_drops: "Vanilla drops",
+  guar_gum: "Guar gum",
+  puree_noisette: "Purée noisette 100%",
+  oreo: "Oréos",
+  spread_pistachio: "Spread pistachio",
+  spread_choco_noisette: "Spread choco noisette",
+  spread_milky_nut: "Spread milky nut"
+};
 
-function toggleIng(el) {
-  const ing = el.dataset.ing;
-  if (activeIngs.has(ing)) { activeIngs.delete(ing); el.classList.remove('active'); }
-  else { activeIngs.add(ing); el.classList.add('active'); }
+// ==== STATE ====
+let selectedIngredients = new Set(Object.keys(ingredientsMap));
+let currentFilter = "all";
+let recipes = JSON.parse(JSON.stringify(recipesData));
+
+// ==== INIT ====
+function init() {
+  loadFromStorage();
+  renderFrigo();
   updateRecipes();
+  updateStats();
+  document.getElementById("darkToggle").addEventListener("click", toggleDarkMode);
+}
+
+// ==== STORAGE ====
+function loadFromStorage() {
+  const stored = localStorage.getItem("ninjaCreami");
+  if (stored) {
+    const data = JSON.parse(stored);
+    selectedIngredients = new Set(data.selectedIngredients || []);
+    recipes = data.recipes || JSON.parse(JSON.stringify(recipesData));
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark-mode");
+    }
+  }
+}
+
+function saveToStorage() {
+  localStorage.setItem("ninjaCreami", JSON.stringify({
+    selectedIngredients: Array.from(selectedIngredients),
+    recipes: recipes
+  }));
+}
+
+// ==== FRIGO ====
+function renderFrigo() {
+  const container = document.getElementById("frigoContent");
+  container.innerHTML = "";
+  Object.entries(ingredientsMap).forEach(([key, label]) => {
+    const div = document.createElement("div");
+    div.className = "frigo-item" + (selectedIngredients.has(key) ? " active" : "");
+    div.textContent = label;
+    div.onclick = () => toggleIngredient(key);
+    container.appendChild(div);
+  });
+}
+
+function toggleIngredient(key) {
+  if (selectedIngredients.has(key)) {
+    selectedIngredients.delete(key);
+  } else {
+    selectedIngredients.add(key);
+  }
+  renderFrigo();
+  updateRecipes();
+  saveToStorage();
 }
 
 function resetFrigo() {
-  document.querySelectorAll('.frigo-item').forEach(el => {
-    activeIngs.delete(el.dataset.ing);
-    el.classList.remove('active');
-  });
+  selectedIngredients.clear();
+  renderFrigo();
   updateRecipes();
+  saveToStorage();
 }
 
+function toggleFrigoCollapse() {
+  const content = document.getElementById("frigoContent");
+  const btn = document.getElementById("frigoToggleBtn");
+  content.classList.toggle("collapsed");
+  btn.textContent = content.classList.contains("collapsed") ? "▶" : "▼";
+}
+
+// ==== FILTERS ====
 function setFilter(btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
   currentFilter = btn.dataset.filter;
   updateRecipes();
 }
 
+// ==== RECIPES ====
 function updateRecipes() {
-  const cards = document.querySelectorAll('.recipe-card');
+  const grid = document.getElementById("recipesGrid");
+  grid.innerHTML = "";
+  
   let visible = 0;
-  cards.forEach(card => {
-    const type = card.dataset.type;
-    const needs = card.dataset.needs.split(',');
-    const hasAll = needs.every(i => activeIngs.has(i));
-    const typeMatch = currentFilter === 'all' || type === currentFilter;
-
-    if (!typeMatch) { card.classList.add('hidden'); return; }
-    card.classList.remove('hidden');
-    if (hasAll) { card.classList.remove('unavailable'); visible++; }
-    else { card.classList.add('unavailable'); visible++; }
+  recipes.forEach(recipe => {
+    const hasAll = recipe.requiredIngredients.every(i => selectedIngredients.has(i));
+    const typeMatch = currentFilter === "all" || recipe.type === currentFilter ||
+                      (currentFilter === "prepared" && recipe.prepared && recipe.prepared.length > 0) ||
+                      (currentFilter === "archived" && recipe.status === "archived");
+    
+    if (!typeMatch) return;
+    
+    const card = createRecipeCard(recipe, hasAll);
+    grid.appendChild(card);
+    visible++;
   });
 
-  const available = [...cards].filter(c => !c.classList.contains('hidden') && !c.classList.contains('unavailable')).length;
-  const total = [...cards].filter(c => !c.classList.contains('hidden')).length;
-  document.getElementById('resultsCount').innerHTML = `<strong>${available}</strong> recette${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''} avec tes ingrédients · ${total} au total`;
-  document.getElementById('emptyState').style.display = available === 0 && total > 0 ? 'block' : 'none';
+  document.getElementById("emptyState").style.display = visible === 0 ? "block" : "none";
+  updateStats();
 }
 
-function toggle(header) {
-  const card = header.closest('.recipe-card');
-  const body = card.querySelector('.recipe-body');
-  const btn = header.querySelector('.recipe-toggle');
-  const open = body.classList.toggle('open');
-  btn.textContent = open ? '−' : '+';
+function createRecipeCard(recipe, available) {
+  const card = document.createElement("div");
+  card.className = "recipe-card" + (available ? "" : " unavailable");
+  card.dataset.recipeId = recipe.id;
+
+  const header = document.createElement("div");
+  header.className = "recipe-header";
+  header.onclick = () => toggleCardBody(card);
+
+  const info = document.createElement("div");
+  info.className = "recipe-info";
+
+  const title = document.createElement("div");
+  title.className = "recipe-title";
+  title.textContent = recipe.title;
+  info.appendChild(title);
+
+  const meta = document.createElement("div");
+  meta.className = "recipe-meta";
+
+  const proteinBadge = document.createElement("span");
+  proteinBadge.className = "badge";
+  proteinBadge.textContent = `💪 ${recipe.proteinGrams}g`;
+  meta.appendChild(proteinBadge);
+
+  const typeBadge = document.createElement("span");
+  typeBadge.className = "badge whey";
+  typeBadge.textContent = recipe.proteinType;
+  meta.appendChild(typeBadge);
+
+  const diffBadge = document.createElement("span");
+  diffBadge.className = "badge " + (recipe.difficulty === "facile" ? "" : recipe.difficulty === "moyen" ? "medium" : "hard");
+  diffBadge.textContent = recipe.difficulty;
+  meta.appendChild(diffBadge);
+
+  if (recipe.rating > 0) {
+    const ratingBadge = document.createElement("span");
+    ratingBadge.className = "badge";
+    ratingBadge.textContent = "⭐".repeat(recipe.rating);
+    meta.appendChild(ratingBadge);
+  }
+
+  info.appendChild(meta);
+
+  const toggle = document.createElement("div");
+  toggle.className = "recipe-toggle";
+  toggle.textContent = "+";
+
+  header.appendChild(info);
+  header.appendChild(toggle);
+  card.appendChild(header);
+
+  const body = createRecipeBody(recipe);
+  card.appendChild(body);
+
+  // Swipe archive
+  let startX = 0;
+  card.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  });
+
+  card.addEventListener("touchmove", (e) => {
+    const currentX = e.touches[0].clientX;
+    const diff = startX - currentX;
+    if (diff > 50) {
+      card.classList.add("swiping");
+      if (!card.querySelector(".archive-button")) {
+        const archiveBtn = document.createElement("div");
+        archiveBtn.className = "archive-button";
+        archiveBtn.textContent = "📦 Archive";
+        archiveBtn.onclick = () => archiveRecipe(recipe.id);
+        card.appendChild(archiveBtn);
+      }
+    }
+  });
+
+  card.addEventListener("touchend", () => {
+    card.classList.remove("swiping");
+  });
+
+  return card;
 }
 
-updateRecipes();
-</script>
+function createRecipeBody(recipe) {
+  const body = document.createElement("div");
+  body.className = "recipe-body";
+
+  let html = `
+    <h3>Mode Ninja</h3>
+    <div class="mode-info">
+      ${recipe.mode}
+      ${recipe.respin ? " + Re-Spin" : ""}
+    </div>
+
+    <h3>Base</h3>
+    <table class="ingredients-table">
+  `;
+
+  recipe.ingredients.base.forEach(ing => {
+    html += `<tr><td>${ing.name}</td><td>${ing.amount} ${ing.unit}</td></tr>`;
+  });
+
+  html += `</table>`;
+
+  if (recipe.ingredients.mixins) {
+    html += `<h3>Mix-In</h3><table class="ingredients-table">`;
+    recipe.ingredients.mixins.forEach(ing => {
+      html += `<tr><td>${ing.name}</td><td>${ing.amount} ${ing.unit}</td></tr>`;
+    });
+    html += `</table>`;
+  }
+
+  html += `<h3>Protocole</h3><ol class="protocol">`;
+  recipe.protocol.forEach((step, i) => {
+    html += `<li data-step="${i + 1}.">${step}</li>`;
+  });
+  html += `</ol>`;
+
+  html += `<h3>Macros</h3><div class="macros">
+    <div class="macro"><span class="macro-value">${recipe.macros.proteins}g</span> Protéines</div>
+    <div class="macro"><span class="macro-value">${recipe.macros.fats}g</span> Lipides</div>
+    <div class="macro"><span class="macro-value">${recipe.macros.carbs}g</span> Glucides</div>
+    <div class="macro"><span class="macro-value">${recipe.macros.calories}</span> kcal</div>
+  </div>`;
+
+  html += `<h3>Rating</h3>
+    <div class="rating-input" id="rating-${recipe.id}">`;
+  for (let i = 1; i <= 5; i++) {
+    const filled = i <= recipe.rating ? " filled" : "";
+    html += `<span class="star${filled}" onclick="rateRecipe('${recipe.id}', ${i})">⭐</span>`;
+  }
+  html += `</div>
+    <textarea class="notes-textarea" placeholder="Notes (optionnel)" onchange="updateNotes('${recipe.id}', this.value)">${recipe.notes || ""}</textarea>
+    
+    <div class="recipe-actions">
+      <button class="btn btn-prepare" onclick="markPrepared('${recipe.id}')">📅 Préparer</button>
+      <button class="btn" onclick="showHistory('${recipe.id}')">📋 Historique</button>
+    </div>
+
+    <div class="source">Source: <a href="#" target="_blank">${recipe.source}</a></div>`;
+
+  body.innerHTML = html;
+  return body;
+}
+
+function toggleCardBody(card) {
+  card.querySelector(".recipe-body").classList.toggle("open");
+  const toggle = card.querySelector(".recipe-toggle");
+  toggle.textContent = toggle.textContent === "+" ? "−" : "+";
+}
+
+// ==== RATING & NOTES ====
+function rateRecipe(recipeId, rating) {
+  const recipe = recipes.find(r => r.id === recipeId);
+  recipe.rating = rating;
+  saveToStorage();
+  updateRecipes();
+}
+
+function updateNotes(recipeId, notes) {
+  const recipe = recipes.find(r => r.id === recipeId);
+  recipe.notes = notes;
+  saveToStorage();
+}
+
+// ==== MEAL PREP ====
+function markPrepared(recipeId) {
+  const recipe = recipes.find(r => r.id === recipeId);
+  if (!recipe.prepared) recipe.prepared = [];
+  recipe.prepared.push({
+    date: new Date().toISOString().split("T")[0],
+    eaten: false
+  });
+  saveToStorage();
+  updateRecipes();
+  alert("✅ Marqué comme préparé le " + new Date().toLocaleDateString("fr-FR"));
+}
+
+function showHistory(recipeId) {
+  const recipe = recipes.find(r => r.id === recipeId);
+  if (!recipe.prepared || recipe.prepared.length === 0) {
+    alert("Aucune préparation enregistrée");
+    return;
+  }
+  const history = recipe.prepared.map((p, i) => `${i + 1}. ${p.date} ${p.eaten ? "✅ Mangé" : "🧊 En congélation"}`).join("\n");
+  alert("Historique :\n\n" + history);
+}
+
+// ==== ARCHIVE ====
+function archiveRecipe(recipeId) {
+  const recipe = recipes.find(r => r.id === recipeId);
+  recipe.status = "archived";
+  saveToStorage();
+  updateRecipes();
+}
+
+// ==== STATS ====
+function updateStats() {
+  const prepared = recipes.reduce((sum, r) => sum + (r.prepared ? r.prepared.length : 0), 0);
+  const available = recipes.filter(r => r.requiredIngredients.every(i => selectedIngredients.has(i)) && currentFilter === "all").length;
+  document.getElementById("statsText").innerHTML = `<strong>${available}</strong> recette${available > 1 ? "s" : ""} disponible${available > 1 ? "s" : ""} · <strong>${prepared}</strong> en préparation`;
+}
+
+// ==== DARK MODE ====
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+  localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+}
+
+// ==== LAUNCH ====
+init();
+
+  </script>
+
 </body>
 </html>
