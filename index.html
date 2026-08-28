@@ -61,12 +61,23 @@
       letter-spacing: -0.5px;
     }
 
-    .dark-toggle {
+    .header-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .header-btn {
       background: none;
       border: none;
       font-size: 20px;
       cursor: pointer;
       padding: 4px 8px;
+      transition: opacity 0.15s;
+    }
+
+    .header-btn:hover {
+      opacity: 0.7;
     }
 
     /* MAIN CONTAINER */
@@ -177,6 +188,26 @@
       border-color: var(--text-dark);
     }
 
+    /* SORT */
+    .sort-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-light);
+      color: var(--text-gray);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-left: auto;
+    }
+
+    .sort-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
     /* STATS */
     .stats {
       background: var(--bg-white);
@@ -271,11 +302,6 @@
       color: var(--accent);
     }
 
-    .badge.casein {
-      background: #ffe6f0;
-      color: #a33;
-    }
-
     .recipe-toggle {
       font-size: 20px;
       color: var(--text-gray);
@@ -297,6 +323,18 @@
 
     .recipe-body.open {
       display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 1000px;
+      }
     }
 
     .recipe-body h3 {
@@ -449,13 +487,6 @@
       opacity: 0.8;
     }
 
-    .btn-consumed {
-      grid-column: 1 / -1;
-      background: var(--success);
-      color: white;
-      border-color: var(--success);
-    }
-
     /* ARCHIVE SWIPE */
     .archive-button {
       position: absolute;
@@ -587,6 +618,10 @@
       .frigo-content {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
       }
+
+      .sort-btn {
+        margin-left: 0;
+      }
     }
 
     ::-webkit-scrollbar {
@@ -613,7 +648,10 @@
 
 <header>
   <div class="header-title">🧊 Ninja Creami Tracker</div>
-  <button class="dark-toggle" id="darkToggle" title="Dark mode">🌙</button>
+  <div class="header-controls">
+    <button class="header-btn" id="refreshBtn" title="Rafraîchir">🔄</button>
+    <button class="header-btn" id="darkToggle" title="Dark mode">🌙</button>
+  </div>
 </header>
 
 <div class="container">
@@ -638,6 +676,7 @@
     <button class="filter-btn" data-filter="milkshake" onclick="setFilter(this)">Milkshake</button>
     <button class="filter-btn" data-filter="prepared" onclick="setFilter(this)">📅 Préparées</button>
     <button class="filter-btn" data-filter="archived" onclick="setFilter(this)">📦 Archivées</button>
+    <button class="sort-btn" id="sortBtn" onclick="toggleSort()">⭐ Top rated</button>
   </div>
 
   <!-- STATS -->
@@ -1120,6 +1159,8 @@ const ingredientsMap = {
 let selectedIngredients = new Set(Object.keys(ingredientsMap));
 let currentFilter = "all";
 let recipes = JSON.parse(JSON.stringify(recipesData));
+let sortByRating = false;
+let openCardId = null;
 
 // ==== INIT ====
 function init() {
@@ -1128,6 +1169,7 @@ function init() {
   updateRecipes();
   updateStats();
   document.getElementById("darkToggle").addEventListener("click", toggleDarkMode);
+  document.getElementById("refreshBtn").addEventListener("click", () => location.reload());
 }
 
 // ==== STORAGE ====
@@ -1188,11 +1230,18 @@ function toggleFrigoCollapse() {
   btn.textContent = content.classList.contains("collapsed") ? "▶" : "▼";
 }
 
-// ==== FILTERS ====
+// ==== FILTERS & SORT ====
 function setFilter(btn) {
   document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
   currentFilter = btn.dataset.filter;
+  updateRecipes();
+}
+
+function toggleSort() {
+  sortByRating = !sortByRating;
+  const btn = document.getElementById("sortBtn");
+  btn.classList.toggle("active", sortByRating);
   updateRecipes();
 }
 
@@ -1202,7 +1251,8 @@ function updateRecipes() {
   grid.innerHTML = "";
   
   let visible = 0;
-  
+  let recipeList = [];
+
   // Cas spécial : filtre "prepared"
   if (currentFilter === "prepared") {
     const preparedRecipes = recipes.filter(r => r.prepared && r.prepared.length > 0);
@@ -1219,13 +1269,23 @@ function updateRecipes() {
       });
     });
   } else {
-    recipes.forEach(recipe => {
+    // Filtrer et trier
+    recipeList = recipes.filter(recipe => {
       const hasAll = recipe.requiredIngredients.every(i => selectedIngredients.has(i));
       const typeMatch = currentFilter === "all" || recipe.type === currentFilter ||
                         (currentFilter === "archived" && recipe.status === "archived");
       
-      if (!typeMatch || (currentFilter !== "archived" && recipe.status === "archived")) return;
-      
+      if (!typeMatch || (currentFilter !== "archived" && recipe.status === "archived")) return false;
+      return true;
+    });
+
+    // Trier par étoiles si activé
+    if (sortByRating) {
+      recipeList.sort((a, b) => b.rating - a.rating);
+    }
+
+    recipeList.forEach(recipe => {
+      const hasAll = recipe.requiredIngredients.every(i => selectedIngredients.has(i));
       const card = createRecipeCard(recipe, hasAll);
       grid.appendChild(card);
       visible++;
@@ -1277,13 +1337,16 @@ function createRecipeCard(recipe, available) {
 
   const toggle = document.createElement("div");
   toggle.className = "recipe-toggle";
-  toggle.textContent = "+";
+  toggle.textContent = openCardId === recipe.id ? "−" : "+";
 
   header.appendChild(info);
   header.appendChild(toggle);
   card.appendChild(header);
 
   const body = createRecipeBody(recipe);
+  if (openCardId === recipe.id) {
+    body.classList.add("open");
+  }
   card.appendChild(body);
 
   // Swipe archive
@@ -1407,9 +1470,21 @@ function createRecipeBody(recipe) {
 }
 
 function toggleCardBody(card) {
-  card.querySelector(".recipe-body").classList.toggle("open");
+  const recipeId = card.dataset.recipeId;
+  const body = card.querySelector(".recipe-body");
+  
+  if (openCardId === recipeId) {
+    // Fermer
+    openCardId = null;
+    body.classList.remove("open");
+  } else {
+    // Ouvrir
+    openCardId = recipeId;
+    body.classList.add("open");
+  }
+
   const toggle = card.querySelector(".recipe-toggle");
-  toggle.textContent = toggle.textContent === "+" ? "−" : "+";
+  toggle.textContent = body.classList.contains("open") ? "−" : "+";
 }
 
 // ==== RATING & NOTES ====
@@ -1417,7 +1492,31 @@ function rateRecipe(recipeId, rating) {
   const recipe = recipes.find(r => r.id === recipeId);
   recipe.rating = rating;
   saveToStorage();
-  updateRecipes();
+  
+  // Mettre à jour juste le rating display, pas tout re-créer
+  const card = document.querySelector(`[data-recipe-id="${recipeId}"]`);
+  if (card) {
+    const stars = card.querySelector(".rating-input");
+    if (stars) {
+      stars.querySelectorAll(".star").forEach((star, i) => {
+        star.classList.toggle("filled", i < rating);
+        star.classList.toggle("empty", i >= rating);
+      });
+    }
+    
+    // Update le titre aussi
+    const ratingDisplay = card.querySelector(".recipe-rating-stars");
+    if (rating > 0) {
+      if (ratingDisplay) {
+        ratingDisplay.textContent = "⭐".repeat(rating);
+      } else {
+        const newRatingDisplay = document.createElement("div");
+        newRatingDisplay.className = "recipe-rating-stars";
+        newRatingDisplay.textContent = "⭐".repeat(rating);
+        card.querySelector(".recipe-info").insertBefore(newRatingDisplay, card.querySelector(".recipe-meta"));
+      }
+    }
+  }
 }
 
 function updateNotes(recipeId, notes) {
@@ -1453,6 +1552,7 @@ function markConsumed(recipeId, index) {
 function archiveRecipe(recipeId) {
   const recipe = recipes.find(r => r.id === recipeId);
   recipe.status = "archived";
+  openCardId = null;
   saveToStorage();
   updateRecipes();
 }
