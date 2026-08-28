@@ -16,9 +16,9 @@
       --accent: #185fa5;
       --success: #3b6d11;
       --danger: #a33;
-      --frigo-bg: #f0ebe5;
-      --frigo-text: #4a4a48;
-      --frigo-active-bg: #3a3a38;
+      --frigo-bg: #f5f3f0;
+      --frigo-text: #5a5a58;
+      --frigo-active-bg: #4a4a48;
       --frigo-active-text: #fff;
     }
 
@@ -28,8 +28,8 @@
       --text-dark: #fafaf8;
       --text-gray: #a8a7a3;
       --border: #3a3a38;
-      --frigo-bg: #3a3a38;
-      --frigo-text: #d0cfcb;
+      --frigo-bg: #454543;
+      --frigo-text: #e0dfdb;
       --frigo-active-bg: #fafaf8;
       --frigo-active-text: #1a1a18;
     }
@@ -242,6 +242,12 @@
       font-weight: 600;
       margin-bottom: 6px;
       color: var(--text-dark);
+    }
+
+    .recipe-rating-stars {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #ffc107;
     }
 
     .recipe-meta {
@@ -487,7 +493,8 @@
     }
 
     .star.empty {
-      opacity: 0.3;
+      opacity: 0.2;
+      color: #ffc107;
     }
 
     .star.filled {
@@ -1217,22 +1224,12 @@ function updateRecipes() {
       const typeMatch = currentFilter === "all" || recipe.type === currentFilter ||
                         (currentFilter === "archived" && recipe.status === "archived");
       
-      if (!typeMatch || recipe.status === "archived") return;
+      if (!typeMatch || (currentFilter !== "archived" && recipe.status === "archived")) return;
       
       const card = createRecipeCard(recipe, hasAll);
       grid.appendChild(card);
       visible++;
     });
-
-    // Filtre archived
-    if (currentFilter === "archived") {
-      const archived = recipes.filter(r => r.status === "archived");
-      archived.forEach(recipe => {
-        const card = createRecipeCard(recipe, true);
-        grid.appendChild(card);
-        visible++;
-      });
-    }
   }
 
   document.getElementById("emptyState").style.display = visible === 0 ? "block" : "none";
@@ -1255,6 +1252,13 @@ function createRecipeCard(recipe, available) {
   title.className = "recipe-title";
   title.textContent = recipe.title;
   info.appendChild(title);
+
+  if (recipe.rating > 0) {
+    const ratingStars = document.createElement("div");
+    ratingStars.className = "recipe-rating-stars";
+    ratingStars.textContent = "⭐".repeat(recipe.rating);
+    info.appendChild(ratingStars);
+  }
 
   const meta = document.createElement("div");
   meta.className = "recipe-meta";
@@ -1438,7 +1442,6 @@ function markPrepared(recipeId) {
 function markConsumed(recipeId, index) {
   const recipe = recipes.find(r => r.id === recipeId);
   if (recipe.prepared && recipe.prepared[index]) {
-    recipe.prepared[index].eaten = true;
     recipe.prepared.splice(index, 1);
     saveToStorage();
     updateRecipes();
